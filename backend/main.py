@@ -52,10 +52,9 @@ def get_bins():
     except:
         return jsonify({})
 
-@app.route("/static/images/<path:filename>")
+@app.route("/images/<path:filename>")
 def serve_album_image(filename):
-    image_dir = os.path.join(app.static_folder, "images")
-    return send_from_directory(image_dir, filename)
+      return send_from_directory("images", filename)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
