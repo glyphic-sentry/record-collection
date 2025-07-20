@@ -1,141 +1,87 @@
-import React, { useEffect, useState, useRef } from "react";
-import "../src/index.css";
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "../index.css";
 
-const GalleryView = () => {
+export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
-  const [darkMode, setDarkMode] = useState(true);
-  const containerRef = useRef(null);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
-      .then((data) => {
-        setAlbums(data);
-        setFiltered(data);
-      });
+      .then((data) => setAlbums(data))
+      .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  useEffect(() => {
-    const filteredAlbums = albums.filter(
-      (a) =>
-        a.title.toLowerCase().includes(search.toLowerCase()) &&
-        (genre === "" || a.genre === genre)
-    );
-    setFiltered(filteredAlbums);
-  }, [search, genre, albums]);
+  const filtered = albums.filter((album) => {
+    const matchSearch = album.title.toLowerCase().includes(search.toLowerCase()) ||
+                        album.artist.toLowerCase().includes(search.toLowerCase());
+    const matchGenre = genre === "" || album.genre === genre;
+    return matchSearch && matchGenre;
+  });
 
-  const scrollLeft = () => {
-    containerRef.current.scrollBy({ left: -300, behavior: "smooth" });
+  const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 400,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } },
+    ],
+    arrows: true,
+    swipe: true,
   };
-
-  const scrollRight = () => {
-    containerRef.current.scrollBy({ left: 300, behavior: "smooth" });
-  };
-
-  const handleMouseDrag = () => {
-    let isDragging = false;
-    let startX;
-    let scrollLeft;
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    const onMouseDown = (e) => {
-      isDragging = true;
-      startX = e.pageX - container.offsetLeft;
-      scrollLeft = container.scrollLeft;
-    };
-
-    const onMouseLeave = () => (isDragging = false);
-    const onMouseUp = () => (isDragging = false);
-
-    const onMouseMove = (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeft - walk;
-    };
-
-    container.addEventListener("mousedown", onMouseDown);
-    container.addEventListener("mouseleave", onMouseLeave);
-    container.addEventListener("mouseup", onMouseUp);
-    container.addEventListener("mousemove", onMouseMove);
-
-    return () => {
-      container.removeEventListener("mousedown", onMouseDown);
-      container.removeEventListener("mouseleave", onMouseLeave);
-      container.removeEventListener("mouseup", onMouseUp);
-      container.removeEventListener("mousemove", onMouseMove);
-    };
-  };
-
-  useEffect(handleMouseDrag, []);
-
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "ArrowLeft") scrollLeft();
-      else if (e.key === "ArrowRight") scrollRight();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   return (
-    <div className={darkMode ? "bg-black text-white" : "bg-white text-black"}>
-      <div className="flex p-4 items-center gap-4">
+    <div className={`min-h-screen ${isDark ? "bg-black text-white" : "bg-white text-black"}`}>      
+      <div className="flex justify-between items-center px-4 py-2">
         <input
-          className="px-2 py-1 border rounded"
-          type="text"
+          className="border rounded px-2 py-1 text-black w-1/2"
           placeholder="Search albums..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="px-2 py-1 border rounded"
+          className="ml-2 border rounded px-2 py-1 text-black"
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
         >
           <option value="">All Genres</option>
-          {[...new Set(albums.map((a) => a.genre))].map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
+          {genres.map((g) => (
+            <option key={g} value={g}>{g}</option>
           ))}
         </select>
         <button
-          className="px-2 py-1 border rounded"
-          onClick={() => setDarkMode((prev) => !prev)}
+          className="ml-4 border rounded px-2 py-1"
+          onClick={() => setIsDark(!isDark)}
         >
-          Toggle {darkMode ? "Light" : "Dark"} Mode
+          Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
       </div>
 
-      <div
-        ref={containerRef}
-        className="scroll-smooth overflow-x-auto whitespace-nowrap scrollbar-hide px-4 cursor-grab select-none"
-      >
-        <div className="flex gap-4">
+      <div className="px-4 pt-4">
+        <Slider {...settings}>
           {filtered.map((album) => (
-            <div
-              key={album.id}
-              className="flex-shrink-0 text-center w-48 sm:w-56 md:w-64 lg:w-72"
-            >
+            <div key={album.id} className="px-2">
               <img
                 src={album.cover_image}
                 alt={album.title}
-                className="w-full h-auto object-contain rounded shadow"
+                className="mx-auto rounded shadow-md w-full h-auto object-contain"
               />
-              <p className="mt-2 text-sm font-medium">{album.title}</p>
+              <p className="text-center mt-2 text-sm">{album.title}</p>
             </div>
           ))}
-        </div>
+        </Slider>
       </div>
     </div>
   );
-};
-
-export default GalleryView;
+}
