@@ -21,7 +21,7 @@ def download_and_cache_image(url: Optional[str]) -> str:
 
     hashed_name = sanitize_filename(hash_url(url)) + ext
     local_path = os.path.join(CACHE_DIR, hashed_name)
-    public_path = f"/static/images/{hashed_name}"
+    public_path = f"/images/{hashed_name}"
 
     if not os.path.exists(local_path):
         try:
@@ -42,7 +42,7 @@ def clear_cache():
             os.remove(file_path)
 
 def get_image_for_album(album: dict) -> str:
-    if album.get("cover_image", "").startswith("/static/images/"):
+    if album.get("cover_image", "").startswith("/images/"):
         return album["cover_image"]
 
     url = album.get("cover_image") or album.get("thumb")
