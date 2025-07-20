@@ -126,12 +126,15 @@ export default function GalleryView() {
               className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center"
               onClick={() => setModalAlbum(album)}
             >
-              <img
-                src={album.cover_image}
-                alt={album.title}
-                className="rounded shadow-md max-h-[60vh] w-auto object-contain"
-              />
-              <p className="text-center mt-2 text-sm w-full">{album.title}</p>
+              <div className="bg-white rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105">
+                <img
+                  src={album.cover_image}
+                  alt={album.title}
+                  className="h-64 w-64 object-cover"
+                />
+              </div>
+              <p className="text-center mt-2 text-base font-medium w-full truncate">{album.title}</p>
+              <p className="text-center text-sm text-gray-400 w-full truncate">{album.artist}</p>
             </div>
           ))}
         </Slider>
