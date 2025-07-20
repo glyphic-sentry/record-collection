@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../index.css";
+import "..src/index.css";
 
 export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
