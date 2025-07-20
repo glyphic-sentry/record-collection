@@ -126,13 +126,13 @@ export default function GalleryView() {
                 <div key={album.id} onClick={() => setSelectedAlbum(album)} className="cursor-pointer px-2">
                   <div className="w-full max-w-[240px] mx-auto flex items-center justify-center">
                     <img
-                      src={`/images/${album.id}.jpg`}
+                      src={`/images/${album.id}.jpeg`}
                       alt={album.title}
                       onError={(e) => {
                         if (album.thumb && album.thumb.startsWith("http")) {
                           e.currentTarget.src = album.thumb;
                         } else {
-                          e.currentTarget.src = "/fallback.jpg";
+                          e.currentTarget.src = "/fallback.jpeg";
                         }
                       }}
                       className="object-contain max-h-[300px] rounded shadow-lg"
@@ -170,13 +170,13 @@ export default function GalleryView() {
             <p className="mb-2">Bin: {selectedAlbum.bin || 'N/A'}</p>
             <p className="mb-2">Tracks: {selectedAlbum.tracklist?.join(', ') || 'N/A'}</p>
             <img
-              src={`/images/${selectedAlbum.id}.jpg`}
+              src={`/images/${selectedAlbum.id}.jpeg`}
               alt={selectedAlbum.title}
               onError={(e) => {
                 if (selectedAlbum.thumb && selectedAlbum.thumb.startsWith("http")) {
                   e.currentTarget.src = selectedAlbum.thumb;
                 } else {
-                  e.currentTarget.src = "/fallback.jpg";
+                  e.currentTarget.src = "/fallback.jpeg";
                 }
               }}
               className="w-full mt-4 rounded"
