@@ -52,12 +52,6 @@ def get_bins():
     except:
         return jsonify({})
 
-from flask import Flask, send_from_directory
-import os
-
-app = Flask(__name__)
-
-# Serve images from backend/images/
 @app.route("/images/<path:filename>")
 def serve_image(filename):
     image_dir = os.path.join(os.path.dirname(__file__), "images")
