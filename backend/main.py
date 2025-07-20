@@ -53,7 +53,7 @@ def get_bins():
         return jsonify({})
 
 @app.route("/images/<path:filename>")
-def serve_image(filename):
+def image(filename):
       return send_from_directory("images", filename)
 
 if __name__ == "__main__":
