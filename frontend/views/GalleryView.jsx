@@ -96,10 +96,14 @@ export default function GalleryView() {
         </button>
       </div>
 
-      <div className="px-4 pt-4 overflow-hidden flex-grow flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden">
         <Slider {...settings} className="overflow-visible w-full">
           {filtered.map((album) => (
-            <div key={album.id} className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center" onClick={() => setModalAlbum(album)}>
+            <div
+              key={album.id}
+              className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center"
+              onClick={() => setModalAlbum(album)}
+            >
               <img
                 src={album.cover_image}
                 alt={album.title}
@@ -114,7 +118,11 @@ export default function GalleryView() {
       {modalAlbum && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn">
           <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl">
-            <button className="absolute top-2 right-2 text-xl" onClick={() => setModalAlbum(null)}>
+            <button
+              className="absolute top-2 right-2 text-xl"
+              onClick={() => setModalAlbum(null)}
+              aria-label="Close modal"
+            >
               &times;
             </button>
             <h2 className="text-xl font-bold mb-2">{modalAlbum.title}</h2>
@@ -124,7 +132,6 @@ export default function GalleryView() {
             <p><strong>Label:</strong> {modalAlbum.label}</p>
             <p><strong>Format:</strong> {modalAlbum.format}</p>
             <p><strong>Date Added:</strong> {new Date(modalAlbum.date_added).toLocaleDateString()}</p>
-            {modalAlbum.thumb && <p><strong>Thumbnail Path:</strong> {modalAlbum.thumb}</p>}
             {modalAlbum.tracklist && modalAlbum.tracklist.length > 0 && (
               <div className="mt-2">
                 <p className="font-semibold">Tracklist:</p>
