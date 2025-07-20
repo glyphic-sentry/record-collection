@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../index.css";
+import "../src/index.css";
 
 const GalleryView = () => {
   const [albums, setAlbums] = useState([]);
