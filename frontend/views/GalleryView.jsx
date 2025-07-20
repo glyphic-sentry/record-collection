@@ -21,17 +21,21 @@ export default function GalleryView() {
       {albums.map((album) => (
         <div key={album.id} className="flex flex-col items-center">
           <img
-            src={album.cover_image}
-            alt={album.title}
-            className="w-48 rounded shadow"
-            onError={(e) => {
-              if (album.thumb) {
-                e.target.src = album.thumb;
-              } else {
-                e.target.src = "/fallback.jpg";
-              }
-            }}
-          />
+  src={album.cover_image}
+  alt={album.title}
+  className="w-48 rounded shadow"
+  onError={(e) => {
+    // Prevent infinite loop by checking current src
+    const fallbackSrc = album.thumb || "/fallback.jpg";
+    if (e.target.src.endsWith(album.cover_image) || e.target.src.includes("/images/")) {
+      e.target.src = fallbackSrc;
+    } else {
+      e.target.onerror = null; // disable further fallback
+      e.target.src = "/fallback.jpg"; // final fallback
+    }
+  }}
+/>
+
           <p className="mt-2 text-center text-sm">{album.title}</p>
         </div>
       ))}
