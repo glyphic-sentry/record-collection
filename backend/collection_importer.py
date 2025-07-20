@@ -47,7 +47,7 @@ def download_image(url, release_id, is_thumb=False):
                 except requests.RequestException as e:
                     print(f"Attempt {attempt + 1} failed for {url}: {e}")
                     time.sleep(2)
-        return f"/static/images/{'thumbs/' if is_thumb else ''}{base_filename}"
+        return f"//images/{'thumbs/' if is_thumb else ''}{base_filename}"
     except Exception as e:
         print(f"Error downloading image for {release_id}: {e}")
         return None
@@ -85,7 +85,7 @@ def fetch_collection(user, token):
                 "format": r.get("formats", [{}])[0].get("name", ""),
                 "genre": r.get("genres", ["Unknown"])[0],
                 "cover_image":download_image(r.get("cover_image"), r.get("id")),
-                "cover_image": f"/static/images/{r.get('id')}.jpg",
+                "cover_image": f"/images/{r.get('id')}.jpg",
                 "thumb": download_image(r.get("thumb"), album_id, is_thumb=True) or "",
                 "tracklist": [],
                 "date_added": release.get("date_added"),
