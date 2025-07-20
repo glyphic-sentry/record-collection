@@ -84,7 +84,7 @@ def fetch_collection(user, token):
                 "label": r.get("labels", [{}])[0].get("name", ""),
                 "format": r.get("formats", [{}])[0].get("name", ""),
                 "genre": r.get("genres", ["Unknown"])[0],
-                "cover_image":download_image(r.get("cover_image"), r.get("id"))
+                "cover_image":download_image(r.get("cover_image"), r.get("id")),
                 "cover_image": f"/static/images/{r.get('id')}.jpg",
                 "thumb": download_image(r.get("thumb"), album_id, is_thumb=True) or "",
                 "tracklist": [],
