@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory, jsonify, request, abort, make_resp
 import os
 import json
 
-app = Flask(__name__, static_folder="static", static_url_path="/static")
+app = Flask(__name__)
 
 @app.route("/")
 def serve_index():
@@ -52,9 +52,16 @@ def get_bins():
     except:
         return jsonify({})
 
+from flask import Flask, send_from_directory
+import os
+
+app = Flask(__name__)
+
+# Serve images from backend/images/
 @app.route("/images/<path:filename>")
-def image(filename):
-      return send_from_directory("images", filename)
+def serve_image(filename):
+    image_dir = os.path.join(os.path.dirname(__file__), "images")
+    return send_from_directory(image_dir, filename)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
