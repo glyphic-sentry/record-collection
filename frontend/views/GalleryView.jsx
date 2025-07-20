@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../index.css";
+import "../src/index.css";
 
 export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
@@ -43,6 +43,8 @@ export default function GalleryView() {
     slidesToScroll: 1,
     arrows: true,
     swipe: true,
+    centerMode: true,
+    centerPadding: "0",
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
@@ -51,15 +53,20 @@ export default function GalleryView() {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? "bg-black text-white" : "bg-white text-black"}`}>
+    <div className={`min-h-screen flex flex-col justify-center ${isDark ? "bg-gradient-to-b from-black via-gray-900 to-black text-white" : "bg-gradient-to-b from-white via-gray-100 to-white text-black"}`}>
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
+        <label htmlFor="search" className="sr-only">Search albums</label>
         <input
+          id="search"
           className="border rounded px-2 py-1 text-black w-1/3"
           placeholder="Search albums..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
+        <label htmlFor="genre" className="sr-only">Filter by genre</label>
         <select
+          id="genre"
           className="border rounded px-2 py-1 text-black"
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
@@ -69,7 +76,10 @@ export default function GalleryView() {
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
+
+        <label htmlFor="sort" className="sr-only">Sort albums</label>
         <select
+          id="sort"
           className="border rounded px-2 py-1 text-black"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
@@ -77,6 +87,7 @@ export default function GalleryView() {
           <option value="recent">Recent</option>
           <option value="alphabetical">Alphabetical</option>
         </select>
+
         <button
           className="border rounded px-2 py-1"
           onClick={() => setIsDark(!isDark)}
@@ -85,24 +96,24 @@ export default function GalleryView() {
         </button>
       </div>
 
-      <div className="px-4 pt-4 overflow-hidden">
-        <Slider {...settings}>
+      <div className="px-4 pt-4 overflow-hidden flex-grow flex items-center justify-center">
+        <Slider {...settings} className="overflow-visible w-full">
           {filtered.map((album) => (
-            <div key={album.id} className="px-2 cursor-pointer focus:outline-none" onClick={() => setModalAlbum(album)}>
+            <div key={album.id} className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center" onClick={() => setModalAlbum(album)}>
               <img
                 src={album.cover_image}
                 alt={album.title}
-                className="mx-auto rounded shadow-md w-full h-[calc(100vw/4)] sm:h-[300px] object-contain"
+                className="rounded shadow-md max-h-[60vh] w-auto object-contain"
               />
-              <p className="text-center mt-2 text-sm">{album.title}</p>
+              <p className="text-center mt-2 text-sm w-full">{album.title}</p>
             </div>
           ))}
         </Slider>
       </div>
 
       {modalAlbum && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh]">
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300">
+          <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl animate-fadeIn">
             <button className="absolute top-2 right-2 text-xl" onClick={() => setModalAlbum(null)}>
               &times;
             </button>
@@ -112,6 +123,8 @@ export default function GalleryView() {
             <p><strong>Genre:</strong> {modalAlbum.genre}</p>
             <p><strong>Label:</strong> {modalAlbum.label}</p>
             <p><strong>Format:</strong> {modalAlbum.format}</p>
+            <p><strong>Date Added:</strong> {new Date(modalAlbum.date_added).toLocaleDateString()}</p>
+            {modalAlbum.thumb && <p><strong>Thumbnail Path:</strong> {modalAlbum.thumb}</p>}
             {modalAlbum.tracklist && modalAlbum.tracklist.length > 0 && (
               <div className="mt-2">
                 <p className="font-semibold">Tracklist:</p>
