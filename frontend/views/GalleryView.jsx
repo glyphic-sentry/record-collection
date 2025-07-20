@@ -96,4 +96,11 @@ export default function GalleryView() {
             <p>{selectedAlbum.artist}</p>
             <p>{selectedAlbum.year}</p>
             <p>{selectedAlbum.label}</p>
-            <p>{
+            <p>{selectedAlbum.format}</p>
+            <p>{selectedAlbum.genre}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
