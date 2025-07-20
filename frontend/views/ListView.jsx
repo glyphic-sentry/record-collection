@@ -4,7 +4,8 @@ export default function ListView() {
   const [albums, setAlbums] = useState([]);
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
-  const [sort, setSort] = useState("recent");
+  const [sortField, setSortField] = useState("date_added");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
@@ -14,13 +15,27 @@ export default function ListView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  const sortedAlbums = [...albums].sort((a, b) => {
-    if (sort === "alphabetical") {
-      const artistCompare = a.artist.localeCompare(b.artist);
-      if (artistCompare !== 0) return artistCompare;
-      return a.title.localeCompare(b.title);
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
     }
-    return new Date(b.date_added) - new Date(a.date_added);
+  };
+
+  const sortedAlbums = [...albums].sort((a, b) => {
+    let result = 0;
+    if (sortField === "artist") {
+      result = a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title);
+    } else if (sortField === "title") {
+      result = a.title.localeCompare(b.title);
+    } else if (sortField === "year") {
+      result = (a.year || 0) - (b.year || 0);
+    } else {
+      result = new Date(a.date_added) - new Date(b.date_added);
+    }
+    return sortDirection === "asc" ? result : -result;
   });
 
   const filtered = sortedAlbums.filter((album) => {
@@ -53,15 +68,6 @@ export default function ListView() {
           ))}
         </select>
 
-        <select
-          className="border rounded px-2 py-1 text-black"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="recent">Recent</option>
-          <option value="alphabetical">Alphabetical</option>
-        </select>
-
         <button
           className="border rounded px-2 py-1"
           onClick={() => setIsDark(!isDark)}
@@ -74,9 +80,9 @@ export default function ListView() {
         <thead>
           <tr className="bg-gray-700 text-left">
             <th className="p-2">Cover</th>
-            <th className="p-2">Title</th>
-            <th className="p-2">Artist</th>
-            <th className="p-2">Year</th>
+            <th className="p-2 cursor-pointer" onClick={() => handleSort("title")}>Title</th>
+            <th className="p-2 cursor-pointer" onClick={() => handleSort("artist")}>Artist</th>
+            <th className="p-2 cursor-pointer" onClick={() => handleSort("year")}>Year</th>
             <th className="p-2">Genre</th>
             <th className="p-2">Label</th>
             <th className="p-2">Link</th>
