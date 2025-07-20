@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,6 +12,7 @@ export default function GalleryView() {
   const [sort, setSort] = useState("recent");
   const [modalAlbum, setModalAlbum] = useState(null);
   const [visibleCount, setVisibleCount] = useState(10);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/collection")
@@ -51,18 +52,25 @@ export default function GalleryView() {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 500,
+    speed: 250,
     slidesToShow: 4,
     slidesToScroll: 1,
     arrows: true,
     swipe: true,
     centerMode: true,
     centerPadding: "0",
+    waitForAnimate: false,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
+  };
+
+  const handleBackdropClick = (e) => {
+    if (e.target.id === "modal-backdrop") {
+      setModalAlbum(null);
+    }
   };
 
   return (
@@ -110,7 +118,7 @@ export default function GalleryView() {
       </div>
 
       <div className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden">
-        <Slider {...settings} className="overflow-visible w-full">
+        <Slider ref={sliderRef} {...settings} className="overflow-visible w-full">
           {filtered.map((album) => (
             <div
               key={album.id}
@@ -129,7 +137,11 @@ export default function GalleryView() {
       </div>
 
       {modalAlbum && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn">
+        <div
+          id="modal-backdrop"
+          onClick={handleBackdropClick}
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn"
+        >
           <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl">
             <button
               className="absolute top-2 right-2 text-xl"
