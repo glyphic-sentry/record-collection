@@ -11,12 +11,23 @@ export default function GalleryView() {
   const [isDark, setIsDark] = useState(true);
   const [sort, setSort] = useState("recent");
   const [modalAlbum, setModalAlbum] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
       .then((data) => setAlbums(data))
       .catch((err) => console.error("Error fetching collection:", err));
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        setVisibleCount((prev) => prev + 10);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const sortedAlbums = [...albums].sort((a, b) => {
@@ -33,7 +44,7 @@ export default function GalleryView() {
                         album.artist.toLowerCase().includes(search.toLowerCase());
     const matchGenre = genre === "" || album.genre === genre;
     return matchSearch && matchGenre;
-  });
+  }).slice(0, visibleCount);
 
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
