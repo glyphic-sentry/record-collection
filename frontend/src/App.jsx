@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import GalleryView from "../views/GalleryView";
 import ListView from "../views/ListView";
@@ -12,7 +11,9 @@ export default function App() {
         <Link to="/list">List</Link>
         <Link to="/report">Reports</Link>
       </nav>
+
       <Routes>
+        {/* Home route shows the gallery */}
         <Route path="/" element={<GalleryView />} />
         <Route path="/list" element={<ListView />} />
         <Route path="/report" element={<ReportView />} />
