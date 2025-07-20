@@ -112,8 +112,8 @@ export default function GalleryView() {
       </div>
 
       {modalAlbum && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300">
-          <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl animate-fadeIn">
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn">
+          <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl">
             <button className="absolute top-2 right-2 text-xl" onClick={() => setModalAlbum(null)}>
               &times;
             </button>
