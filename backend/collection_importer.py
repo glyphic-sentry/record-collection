@@ -4,7 +4,6 @@ import time
 import json
 from urllib.parse import urlparse
 from PIL import Image
-from io import BytesIO
 
 DISCOGS_USER = "glyphic"
 DISCOGS_TOKEN = "BBBCoVxGwUDXlufRBSfCJFLCqlbHyUkSZOApLZRh"
@@ -18,10 +17,8 @@ def download_image(url, release_id):
     if not url:
         return None
     try:
-        ext = os.path.splitext(urlparse(url).path)[-1] or ".jpg"
         base_filename = f"{release_id}.jpeg"
         img_path = os.path.join(IMG_DIR, base_filename)
-
         if not os.path.exists(img_path):
             print(f"Downloading image for release {release_id}")
             headers = {"User-Agent": "DiscogsCollectorBot/1.0 +https://github.com/glyphic"}
@@ -49,14 +46,23 @@ def fetch_release_details(release_id):
         print(f"Error fetching release {release_id}: {e}")
     return {}
 
+def load_existing_ids():
+    if os.path.exists(COLLECTION_PATH):
+        with open(COLLECTION_PATH) as f:
+            existing = json.load(f)
+        return {entry["id"]: entry for entry in existing}
+    return {}
+
 def fetch_collection():
+    existing_albums = load_existing_ids()
     headers = {
         "Authorization": f"Discogs token={DISCOGS_TOKEN}",
         "User-Agent": "DiscogsCollectorBot/1.0 +https://github.com/glyphic"
     }
+
     page = 1
     per_page = 100
-    albums = []
+    new_albums = []
 
     while True:
         url = f"{API_BASE}/users/{DISCOGS_USER}/collection/folders/0/releases?page={page}&per_page={per_page}"
@@ -74,6 +80,10 @@ def fetch_collection():
         for entry in releases:
             basic = entry.get("basic_information", {})
             release_id = basic.get("id")
+
+            if release_id in existing_albums:
+                continue  # Skip already imported
+
             detailed = fetch_release_details(release_id)
             image_url = basic.get("cover_image")
 
@@ -90,14 +100,15 @@ def fetch_collection():
                 "date_added": entry.get("date_added")
             }
 
-            albums.append(album)
+            new_albums.append(album)
             time.sleep(1)
 
         if len(releases) < per_page:
             break
         page += 1
 
-    return albums
+    combined = list(existing_albums.values()) + new_albums
+    return sorted(combined, key=lambda x: x.get("date_added", ""), reverse=True)
 
 def save_collection(albums):
     with open(COLLECTION_PATH, "w") as f:
