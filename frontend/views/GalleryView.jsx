@@ -21,6 +21,8 @@ export default function GalleryView() {
 
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
+      const artistCompare = a.artist.localeCompare(b.artist);
+      if (artistCompare !== 0) return artistCompare;
       return a.title.localeCompare(b.title);
     }
     return new Date(b.date_added) - new Date(a.date_added);
