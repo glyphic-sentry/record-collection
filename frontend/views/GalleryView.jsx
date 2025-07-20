@@ -9,6 +9,8 @@ export default function GalleryView() {
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("");
   const [isDark, setIsDark] = useState(true);
+  const [sort, setSort] = useState("recent");
+  const [modalAlbum, setModalAlbum] = useState(null);
 
   useEffect(() => {
     fetch("/api/collection")
@@ -17,7 +19,14 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  const filtered = albums.filter((album) => {
+  const sortedAlbums = [...albums].sort((a, b) => {
+    if (sort === "alphabetical") {
+      return a.title.localeCompare(b.title);
+    }
+    return new Date(b.date_added) - new Date(a.date_added);
+  });
+
+  const filtered = sortedAlbums.filter((album) => {
     const matchSearch = album.title.toLowerCase().includes(search.toLowerCase()) ||
                         album.artist.toLowerCase().includes(search.toLowerCase());
     const matchGenre = genre === "" || album.genre === genre;
@@ -42,16 +51,16 @@ export default function GalleryView() {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? "bg-black text-white" : "bg-white text-black"}`}>      
-      <div className="flex justify-between items-center px-4 py-2">
+    <div className={`min-h-screen ${isDark ? "bg-black text-white" : "bg-white text-black"}`}>
+      <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
-          className="border rounded px-2 py-1 text-black w-1/2"
+          className="border rounded px-2 py-1 text-black w-1/3"
           placeholder="Search albums..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="ml-2 border rounded px-2 py-1 text-black"
+          className="border rounded px-2 py-1 text-black"
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
         >
@@ -60,18 +69,26 @@ export default function GalleryView() {
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
+        <select
+          className="border rounded px-2 py-1 text-black"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="recent">Recent</option>
+          <option value="alphabetical">Alphabetical</option>
+        </select>
         <button
-          className="ml-4 border rounded px-2 py-1"
+          className="border rounded px-2 py-1"
           onClick={() => setIsDark(!isDark)}
         >
           Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
       </div>
 
-      <div className="px-4 pt-4">
+      <div className="px-4 pt-4 overflow-hidden">
         <Slider {...settings}>
           {filtered.map((album) => (
-            <div key={album.id} className="px-2">
+            <div key={album.id} className="px-2 cursor-pointer" onClick={() => setModalAlbum(album)}>
               <img
                 src={album.cover_image}
                 alt={album.title}
@@ -82,6 +99,32 @@ export default function GalleryView() {
           ))}
         </Slider>
       </div>
+
+      {modalAlbum && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="bg-white text-black rounded p-4 max-w-md w-full relative">
+            <button className="absolute top-2 right-2 text-xl" onClick={() => setModalAlbum(null)}>
+              &times;
+            </button>
+            <h2 className="text-xl font-bold mb-2">{modalAlbum.title}</h2>
+            <p><strong>Artist:</strong> {modalAlbum.artist}</p>
+            <p><strong>Year:</strong> {modalAlbum.year}</p>
+            <p><strong>Genre:</strong> {modalAlbum.genre}</p>
+            <p><strong>Label:</strong> {modalAlbum.label}</p>
+            <p><strong>Format:</strong> {modalAlbum.format}</p>
+            {modalAlbum.tracklist && modalAlbum.tracklist.length > 0 && (
+              <div className="mt-2">
+                <p className="font-semibold">Tracklist:</p>
+                <ul className="list-disc ml-5">
+                  {modalAlbum.tracklist.map((track, i) => (
+                    <li key={i}>{track.title}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
