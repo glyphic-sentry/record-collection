@@ -126,7 +126,7 @@ export default function GalleryView() {
                 <div key={album.id} onClick={() => setSelectedAlbum(album)} className="cursor-pointer px-2">
                   <div className="w-full max-w-[240px] mx-auto flex items-center justify-center">
                     <img
-                      src={`/static/images/${album.id}.jpg`}
+                      src={`/images/${album.id}.jpg`}
                       alt={album.title}
                       onError={(e) => {
                         if (album.thumb && album.thumb.startsWith("http")) {
@@ -170,7 +170,7 @@ export default function GalleryView() {
             <p className="mb-2">Bin: {selectedAlbum.bin || 'N/A'}</p>
             <p className="mb-2">Tracks: {selectedAlbum.tracklist?.join(', ') || 'N/A'}</p>
             <img
-              src={`/static/images/${selectedAlbum.id}.jpg`}
+              src={`/images/${selectedAlbum.id}.jpg`}
               alt={selectedAlbum.title}
               onError={(e) => {
                 if (selectedAlbum.thumb && selectedAlbum.thumb.startsWith("http")) {
