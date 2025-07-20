@@ -1,152 +1,141 @@
 import React, { useEffect, useState, useRef } from "react";
+import "../index.css";
 
-export default function GalleryView() {
+const GalleryView = () => {
   const [albums, setAlbums] = useState([]);
-  const [filteredAlbums, setFilteredAlbums] = useState([]);
-  const [selectedAlbum, setSelectedAlbum] = useState(null);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+  const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const binRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [genre, setGenre] = useState("");
+  const [darkMode, setDarkMode] = useState(true);
+  const containerRef = useRef(null);
 
-  // Fetch albums
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) {
-          const sorted = data.sort((a, b) =>
-            new Date(b.date_added) - new Date(a.date_added)
-          );
-          setAlbums(sorted);
-          setFilteredAlbums(sorted);
-        }
+        setAlbums(data);
+        setFiltered(data);
       });
   }, []);
 
-  // Filter albums by search
   useEffect(() => {
-    const query = search.toLowerCase();
-    setFilteredAlbums(
-      albums.filter((a) =>
-        `${a.title} ${a.artist}`.toLowerCase().includes(query)
-      )
+    const filteredAlbums = albums.filter(
+      (a) =>
+        a.title.toLowerCase().includes(search.toLowerCase()) &&
+        (genre === "" || a.genre === genre)
     );
-    setCurrentIndex(0);
-  }, [search, albums]);
+    setFiltered(filteredAlbums);
+  }, [search, genre, albums]);
 
-  // Handle keyboard nav
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === "ArrowRight") {
-        setCurrentIndex((i) => Math.min(i + 1, filteredAlbums.length - 1));
-      } else if (e.key === "ArrowLeft") {
-        setCurrentIndex((i) => Math.max(i - 1, 0));
-      } else if (e.key === "Enter") {
-        setSelectedAlbum(filteredAlbums[currentIndex]);
-      } else if (e.key === "Escape") {
-        setSelectedAlbum(null);
-      } else if (e.key === "t") {
-        toggleTheme();
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [filteredAlbums, currentIndex]);
-
-  // Scroll active album into view
-  useEffect(() => {
-    if (binRef.current && binRef.current.children[currentIndex]) {
-      binRef.current.children[currentIndex].scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-      });
-    }
-  }, [currentIndex]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+  const scrollLeft = () => {
+    containerRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };
 
-  return (
-    <div className={`${theme} min-h-screen transition-colors duration-300`}>
-      <div className="bg-white dark:bg-gray-900 text-black dark:text-white min-h-screen p-4">
-        <div className="flex justify-between items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search albums..."
-            className="w-full md:w-1/2 p-2 rounded border dark:bg-gray-800 dark:border-gray-700"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button
-            onClick={toggleTheme}
-            className="ml-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-800 dark:text-white text-sm"
-          >
-            Toggle {theme === "dark" ? "Light" : "Dark"} Mode
-          </button>
-        </div>
+  const scrollRight = () => {
+    containerRef.current.scrollBy({ left: 300, behavior: "smooth" });
+  };
 
-        <div
-          className="flex overflow-x-auto space-x-4 snap-x pb-4"
-          ref={binRef}
+  const handleMouseDrag = () => {
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onMouseDown = (e) => {
+      isDragging = true;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    };
+
+    const onMouseLeave = () => (isDragging = false);
+    const onMouseUp = () => (isDragging = false);
+
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    container.addEventListener("mouseleave", onMouseLeave);
+    container.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      container.removeEventListener("mousedown", onMouseDown);
+      container.removeEventListener("mouseleave", onMouseLeave);
+      container.removeEventListener("mouseup", onMouseUp);
+      container.removeEventListener("mousemove", onMouseMove);
+    };
+  };
+
+  useEffect(handleMouseDrag, []);
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "ArrowLeft") scrollLeft();
+      else if (e.key === "ArrowRight") scrollRight();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  return (
+    <div className={darkMode ? "bg-black text-white" : "bg-white text-black"}>
+      <div className="flex p-4 items-center gap-4">
+        <input
+          className="px-2 py-1 border rounded"
+          type="text"
+          placeholder="Search albums..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select
+          className="px-2 py-1 border rounded"
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
-          {filteredAlbums.map((album, i) => (
+          <option value="">All Genres</option>
+          {[...new Set(albums.map((a) => a.genre))].map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
+          ))}
+        </select>
+        <button
+          className="px-2 py-1 border rounded"
+          onClick={() => setDarkMode((prev) => !prev)}
+        >
+          Toggle {darkMode ? "Light" : "Dark"} Mode
+        </button>
+      </div>
+
+      <div
+        ref={containerRef}
+        className="scroll-smooth overflow-x-auto whitespace-nowrap scrollbar-hide px-4 cursor-grab select-none"
+      >
+        <div className="flex gap-4">
+          {filtered.map((album) => (
             <div
               key={album.id}
-              className={`flex-shrink-0 snap-center w-48 text-center transition-transform duration-300 ${
-                i === currentIndex ? "scale-105" : "opacity-70"
-              }`}
+              className="flex-shrink-0 text-center w-48 sm:w-56 md:w-64 lg:w-72"
             >
               <img
                 src={album.cover_image}
                 alt={album.title}
-                className="rounded shadow-lg w-full cursor-pointer"
-                onClick={() => setSelectedAlbum(album)}
-                onError={(e) => {
-                  if (!e.target.src.endsWith("/fallback.jpg")) {
-                    e.target.src = "/fallback.jpg";
-                  } else {
-                    e.target.onerror = null;
-                  }
-                }}
+                className="w-full h-auto object-contain rounded shadow"
               />
-              <p className="mt-2 text-sm font-semibold truncate">
-                {album.title}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                {album.artist}
-              </p>
+              <p className="mt-2 text-sm font-medium">{album.title}</p>
             </div>
           ))}
         </div>
-
-        {selectedAlbum && (
-          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 text-black dark:text-white p-6 rounded max-w-md w-full relative">
-              <button
-                onClick={() => setSelectedAlbum(null)}
-                className="absolute top-2 right-2 text-xl"
-              >
-                ✖
-              </button>
-              <img
-                src={selectedAlbum.cover_image}
-                className="w-full mb-4 rounded"
-                alt={selectedAlbum.title}
-              />
-              <h2 className="text-lg font-bold mb-1">{selectedAlbum.title}</h2>
-              <p className="mb-1">{selectedAlbum.artist}</p>
-              <p className="mb-1 text-sm">{selectedAlbum.year}</p>
-              <p className="mb-1 text-sm">{selectedAlbum.label}</p>
-              <p className="mb-1 text-sm">{selectedAlbum.format}</p>
-              <p className="mb-1 text-sm">{selectedAlbum.genre}</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
-}
+};
+
+export default GalleryView;
