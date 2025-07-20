@@ -130,3 +130,23 @@ export default function GalleryView() {
                 onClick={() => setSelectedAlbum(null)}
                 className="absolute top-2 right-2 text-xl"
               >
+                ✖
+              </button>
+              <img
+                src={selectedAlbum.cover_image}
+                className="w-full mb-4 rounded"
+                alt={selectedAlbum.title}
+              />
+              <h2 className="text-lg font-bold mb-1">{selectedAlbum.title}</h2>
+              <p className="mb-1">{selectedAlbum.artist}</p>
+              <p className="mb-1 text-sm">{selectedAlbum.year}</p>
+              <p className="mb-1 text-sm">{selectedAlbum.label}</p>
+              <p className="mb-1 text-sm">{selectedAlbum.format}</p>
+              <p className="mb-1 text-sm">{selectedAlbum.genre}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
