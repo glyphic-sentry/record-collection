@@ -128,7 +128,13 @@ export default function GalleryView() {
                     <img
                       src={`/static/images/${album.id}.jpg`}
                       alt={album.title}
-                      onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
+                      onError={(e) => {
+                        if (album.thumb && album.thumb.startsWith("http")) {
+                          e.currentTarget.src = album.thumb;
+                        } else {
+                          e.currentTarget.src = "/fallback.jpg";
+                        }
+                      }}
                       className="object-contain max-h-[300px] rounded shadow-lg"
                     />
                   </div>
@@ -166,8 +172,14 @@ export default function GalleryView() {
             <img
               src={`/static/images/${selectedAlbum.id}.jpg`}
               alt={selectedAlbum.title}
+              onError={(e) => {
+                if (selectedAlbum.thumb && selectedAlbum.thumb.startsWith("http")) {
+                  e.currentTarget.src = selectedAlbum.thumb;
+                } else {
+                  e.currentTarget.src = "/fallback.jpg";
+                }
+              }}
               className="w-full mt-4 rounded"
-              onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
             />
           </div>
         </div>
