@@ -2,111 +2,109 @@ import React, { useEffect, useState } from "react";
 
 export default function ListView() {
   const [albums, setAlbums] = useState([]);
-  const [bins, setBins] = useState({});
-  const [editing, setEditing] = useState({});
-  const [bulkMode, setBulkMode] = useState(false);
-  const [selected, setSelected] = useState([]);
+  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("");
+  const [sort, setSort] = useState("recent");
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    fetch("/api/collection").then((res) => res.json()).then(setAlbums);
-    fetch("/api/bin").then((res) => res.json()).then(setBins);
+    fetch("/api/collection")
+      .then((res) => res.json())
+      .then((data) => setAlbums(data))
+      .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  const handleBinUpdate = (id, bin) => {
-    fetch(`/api/bin/${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bin })
-    }).then(() => {
-      setBins((b) => ({ ...b, [id]: bin }));
-      setEditing((e) => ({ ...e, [id]: false }));
-    });
-  };
+  const sortedAlbums = [...albums].sort((a, b) => {
+    if (sort === "alphabetical") {
+      const artistCompare = a.artist.localeCompare(b.artist);
+      if (artistCompare !== 0) return artistCompare;
+      return a.title.localeCompare(b.title);
+    }
+    return new Date(b.date_added) - new Date(a.date_added);
+  });
 
-  const handleBulkUpdate = (bin) => {
-    selected.forEach((id) => handleBinUpdate(id, bin));
-    setSelected([]);
-    setBulkMode(false);
-  };
+  const filtered = sortedAlbums.filter((album) => {
+    const matchSearch = album.title.toLowerCase().includes(search.toLowerCase()) ||
+                        album.artist.toLowerCase().includes(search.toLowerCase());
+    const matchGenre = genre === "" || album.genre === genre;
+    return matchSearch && matchGenre;
+  });
 
-  const toggleSelect = (id) => {
-    setSelected((s) =>
-      s.includes(id) ? s.filter((i) => i !== id) : [...s, id]
-    );
-  };
+  const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl mb-2">List View</h1>
-      <div className="flex items-center gap-4 mb-4">
-        <button
-          onClick={() => setBulkMode((v) => !v)}
-          className="bg-blue-600 px-2 py-1 rounded"
+    <div className={`min-h-screen p-4 ${isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
+      <div className="flex flex-wrap gap-2 justify-between items-center mb-4">
+        <input
+          className="border rounded px-2 py-1 text-black w-full sm:w-auto"
+          placeholder="Search albums..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <select
+          className="border rounded px-2 py-1 text-black"
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
-          {bulkMode ? "Cancel Bulk" : "Bulk Edit"}
+          <option value="">All Genres</option>
+          {genres.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+        </select>
+
+        <select
+          className="border rounded px-2 py-1 text-black"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="recent">Recent</option>
+          <option value="alphabetical">Alphabetical</option>
+        </select>
+
+        <button
+          className="border rounded px-2 py-1"
+          onClick={() => setIsDark(!isDark)}
+        >
+          Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
-        {bulkMode && selected.length > 0 && (
-          <>
-            <span>{selected.length} selected</span>
-            <input
-              type="text"
-              placeholder="New bin"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleBulkUpdate(e.target.value);
-              }}
-              className="text-black px-1"
-            />
-          </>
-        )}
       </div>
-      <table className="table-auto w-full text-left">
+
+      <table className="w-full table-auto border-collapse">
         <thead>
-          <tr>
-            {bulkMode && <th>Select</th>}
-            <th>Artist</th>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Bin</th>
+          <tr className="bg-gray-700 text-left">
+            <th className="p-2">Cover</th>
+            <th className="p-2">Title</th>
+            <th className="p-2">Artist</th>
+            <th className="p-2">Year</th>
+            <th className="p-2">Genre</th>
+            <th className="p-2">Label</th>
+            <th className="p-2">Link</th>
           </tr>
         </thead>
         <tbody>
-          {albums.map((a) => {
-            const id = a.id;
-            const info = a.basic_information;
-            return (
-              <tr key={id} className="border-t border-gray-700">
-                {bulkMode && (
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(id)}
-                      onChange={() => toggleSelect(id)}
-                    />
-                  </td>
-                )}
-                <td>{info.artists?.[0]?.name}</td>
-                <td>{info.title}</td>
-                <td>{info.year}</td>
-                <td>
-                  {editing[id] ? (
-                    <input
-                      type="text"
-                      defaultValue={bins[id] || ""}
-                      onBlur={(e) => handleBinUpdate(id, e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && handleBinUpdate(id, e.target.value)
-                      }
-                      className="text-black px-1"
-                    />
-                  ) : (
-                    <span onClick={() => setEditing({ ...editing, [id]: true })}>
-                      {bins[id] || <em className="text-gray-400">Set bin</em>}
-                    </span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
+          {filtered.map((album) => (
+            <tr key={album.id} className="border-t border-gray-600 hover:bg-gray-800">
+              <td className="p-2">
+                <img src={album.thumb || album.cover_image} alt={album.title} className="h-16 w-16 object-cover rounded" />
+              </td>
+              <td className="p-2">{album.title}</td>
+              <td className="p-2">{album.artist}</td>
+              <td className="p-2">{album.year}</td>
+              <td className="p-2">{album.genre}</td>
+              <td className="p-2">{album.label}</td>
+              <td className="p-2">
+                <a
+                  href={`https://www.discogs.com/release/${album.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  View
+                </a>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
