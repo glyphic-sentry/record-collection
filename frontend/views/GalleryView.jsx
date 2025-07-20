@@ -38,7 +38,7 @@ export default function GalleryView() {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 400,
+    speed: 600,
     slidesToShow: 4,
     slidesToScroll: 1,
     responsive: [
