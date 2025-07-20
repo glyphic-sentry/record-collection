@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../src/index.css";
+import "../index.css";
 
 export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
@@ -38,16 +38,16 @@ export default function GalleryView() {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 600,
+    speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
+    arrows: true,
+    swipe: true,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
-    arrows: true,
-    swipe: true,
   };
 
   return (
@@ -88,11 +88,11 @@ export default function GalleryView() {
       <div className="px-4 pt-4 overflow-hidden">
         <Slider {...settings}>
           {filtered.map((album) => (
-            <div key={album.id} className="px-2 cursor-pointer" onClick={() => setModalAlbum(album)}>
+            <div key={album.id} className="px-2 cursor-pointer focus:outline-none" onClick={() => setModalAlbum(album)}>
               <img
                 src={album.cover_image}
                 alt={album.title}
-                className="mx-auto rounded shadow-md w-full h-auto object-contain"
+                className="mx-auto rounded shadow-md w-full h-[calc(100vw/4)] sm:h-[300px] object-contain"
               />
               <p className="text-center mt-2 text-sm">{album.title}</p>
             </div>
@@ -102,7 +102,7 @@ export default function GalleryView() {
 
       {modalAlbum && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded p-4 max-w-md w-full relative">
+          <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh]">
             <button className="absolute top-2 right-2 text-xl" onClick={() => setModalAlbum(null)}>
               &times;
             </button>
