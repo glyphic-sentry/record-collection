@@ -1,0 +1,12 @@
+[Unit]
+Description=Discogs Flask API
+After=network.target
+
+[Service]
+User=glyphic
+WorkingDirectory=/home/glyphic/record-collection/backend
+ExecStart=/home/glyphic/record-collection/backend/venv/bin/python main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

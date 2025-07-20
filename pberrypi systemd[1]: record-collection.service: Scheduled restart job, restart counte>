@@ -1,0 +1,615 @@
+Jul 16 21:20:33 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:20:33 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:20:33 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:33 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:20:33 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:20:33 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:20:33 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:20:33 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:20:34 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:20:34 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:20:34 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:20:34 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:20:34 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:23:47 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:23:47 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:23:47 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:23:47 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:48 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:23:48 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:23:48 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:23:48 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:23:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:48 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:23:48 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:23:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:23:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:23:48 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:30:16 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:30:16 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:30:16 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:30:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:30:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:30:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:30:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:30:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:30:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:30:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:30:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:30:17 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:37:48 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:37:48 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:37:48 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:37:48 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:49 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:37:49 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:37:49 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:37:49 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:37:49 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:49 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:37:49 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:37:49 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:37:49 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:37:49 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:39:22 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:39:22 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:39:22 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:39:22 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:23 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:39:23 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:39:23 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:39:23 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:39:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:23 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:39:23 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:39:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:39:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:39:23 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:41:30 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:41:30 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:41:30 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:41:30 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:31 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:41:31 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:41:31 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:41:31 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:41:31 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:31 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:41:31 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:41:31 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:41:31 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:41:31 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 21:52:37 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:52:37 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:52:37 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 21:52:38 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 21:52:38 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 21:52:38 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 21:52:38 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 21:52:38 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:39 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 21:52:39 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 21:52:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 21:52:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 21:52:39 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:18:39 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:18:39 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:18:39 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 22:18:39 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:40 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:18:40 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:18:40 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:18:40 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=217/USER[0m
+Jul 16 22:18:40 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:40 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:18:40 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:18:40 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:18:40 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:18:40 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:19:16 raspberrypi (python)[9971]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:16 raspberrypi (python)[9971]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:19:16 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:16 raspberrypi (python)[9972]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:16 raspberrypi (python)[9972]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:19:16 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:16 raspberrypi (python)[9973]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:16 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:16 raspberrypi (python)[9973]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:19:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:17 raspberrypi (python)[9974]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:17 raspberrypi (python)[9974]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:19:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:17 raspberrypi (python)[9975]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:17 raspberrypi (python)[9975]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:19:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:17 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:19:55 raspberrypi (python)[9981]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:55 raspberrypi (python)[9981]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:55 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:55 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:55 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:19:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9982]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9982]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:19:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9983]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:56 raspberrypi (python)[9983]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:19:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9984]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9984]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:19:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi (python)[9985]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:19:56 raspberrypi (python)[9985]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:19:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:57 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:19:57 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:19:57 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:19:57 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:19:57 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:21:36 raspberrypi (python)[10060]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:21:36 raspberrypi (python)[10060]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:21:36 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:21:36 raspberrypi (python)[10061]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:21:36 raspberrypi (python)[10061]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:21:36 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:21:36 raspberrypi (python)[10062]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:21:36 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:21:36 raspberrypi (python)[10062]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:21:36 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:21:37 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:21:37 raspberrypi (python)[10063]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:21:37 raspberrypi (python)[10063]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:21:37 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:21:37 raspberrypi (python)[10064]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 16 22:21:37 raspberrypi (python)[10064]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:21:37 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:21:37 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:28:42 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:28:43 raspberrypi python[10404]:  * Serving Flask app 'main'
+Jul 16 22:28:43 raspberrypi python[10404]:  * Debug mode: on
+Jul 16 22:28:43 raspberrypi python[10404]: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 16 22:28:43 raspberrypi python[10404]:  * Running on all addresses (0.0.0.0)
+Jul 16 22:28:43 raspberrypi python[10404]:  * Running on http://127.0.0.1:5000
+Jul 16 22:28:43 raspberrypi python[10404]:  * Running on http://192.168.1.6:5000
+Jul 16 22:28:43 raspberrypi python[10404]: Press CTRL+C to quit
+Jul 16 22:28:43 raspberrypi python[10404]:  * Restarting with stat
+Jul 16 22:28:43 raspberrypi python[10407]:  * Debugger is active!
+Jul 16 22:28:43 raspberrypi python[10407]:  * Debugger PIN: 619-483-187
+Jul 16 22:36:28 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:36:28] "GET / HTTP/1.1" 200 -
+Jul 16 22:36:28 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:36:28] "GET /static/js/main.655e66d8.js HTTP/1.1" 200 -
+Jul 16 22:36:28 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:36:28] "GET /favicon.ico HTTP/1.1" 200 -
+Jul 16 22:37:26 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:37:26] "GET / HTTP/1.1" 200 -
+Jul 16 22:37:26 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:37:26] "GET /static/js/main.655e66d8.js HTTP/1.1" 200 -
+Jul 16 22:37:26 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:37:26] "GET /favicon.ico HTTP/1.1" 200 -
+Jul 16 22:38:46 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:38:46] "GET /list HTTP/1.1" 200 -
+Jul 16 22:38:46 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:38:46] "GET /static/js/main.655e66d8.js HTTP/1.1" 304 -
+Jul 16 22:38:46 raspberrypi python[10407]: 192.168.1.27 - - [16/Jul/2025 22:38:46] "GET /favicon.ico HTTP/1.1" 304 -
+Jul 16 22:42:53 raspberrypi systemd[1]: Stopping record-collection.service - Discogs Flask API...
+Jul 16 22:42:53 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 16 22:42:53 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:53 raspberrypi systemd[1]: record-collection.service: Consumed 3.523s CPU time.
+Jul 16 22:42:53 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:42:53 raspberrypi python[10500]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:42:53 raspberrypi python[10500]:     return "Not found", 404
+Jul 16 22:42:53 raspberrypi python[10500]:     ^
+Jul 16 22:42:53 raspberrypi python[10500]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:42:53 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:42:53 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:53 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:42:53 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:53 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:42:53 raspberrypi python[10502]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:42:53 raspberrypi python[10502]:     return "Not found", 404
+Jul 16 22:42:53 raspberrypi python[10502]:     ^
+Jul 16 22:42:53 raspberrypi python[10502]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:42:53 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:42:53 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:42:54 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi python[10503]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:42:54 raspberrypi python[10503]:     return "Not found", 404
+Jul 16 22:42:54 raspberrypi python[10503]:     ^
+Jul 16 22:42:54 raspberrypi python[10503]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:42:54 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi python[10504]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:42:54 raspberrypi python[10504]:     return "Not found", 404
+Jul 16 22:42:54 raspberrypi python[10504]:     ^
+Jul 16 22:42:54 raspberrypi python[10504]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:42:54 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi python[10505]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:42:54 raspberrypi python[10505]:     return "Not found", 404
+Jul 16 22:42:54 raspberrypi python[10505]:     ^
+Jul 16 22:42:54 raspberrypi python[10505]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:42:54 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:42:54 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:43:23 raspberrypi python[10513]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:43:23 raspberrypi python[10513]:     return "Not found", 404
+Jul 16 22:43:23 raspberrypi python[10513]:     ^
+Jul 16 22:43:23 raspberrypi python[10513]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 16 22:43:23 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:43:23 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:43:23 raspberrypi python[10514]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:43:23 raspberrypi python[10514]:     return "Not found", 404
+Jul 16 22:43:23 raspberrypi python[10514]:     ^
+Jul 16 22:43:23 raspberrypi python[10514]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 16 22:43:23 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:43:23 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:43:23 raspberrypi python[10515]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:43:23 raspberrypi python[10515]:     return "Not found", 404
+Jul 16 22:43:23 raspberrypi python[10515]:     ^
+Jul 16 22:43:23 raspberrypi python[10515]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:43:23 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 16 22:43:24 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:43:24 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:43:24 raspberrypi python[10516]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:43:24 raspberrypi python[10516]:     return "Not found", 404
+Jul 16 22:43:24 raspberrypi python[10516]:     ^
+Jul 16 22:43:24 raspberrypi python[10516]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 16 22:43:24 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:43:24 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:43:24 raspberrypi python[10517]:   File "/home/glyphic/record-collection/backend/main.py", line 57
+Jul 16 22:43:24 raspberrypi python[10517]:     return "Not found", 404
+Jul 16 22:43:24 raspberrypi python[10517]:     ^
+Jul 16 22:43:24 raspberrypi python[10517]: IndentationError: expected an indented block after 'if' statement on line 56
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 16 22:43:24 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 16 22:43:24 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 16 22:45:40 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:45:41 raspberrypi python[10538]:  * Serving Flask app 'main'
+Jul 16 22:45:41 raspberrypi python[10538]:  * Debug mode: on
+Jul 16 22:45:41 raspberrypi python[10538]: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 16 22:45:41 raspberrypi python[10538]:  * Running on all addresses (0.0.0.0)
+Jul 16 22:45:41 raspberrypi python[10538]:  * Running on http://127.0.0.1:5000
+Jul 16 22:45:41 raspberrypi python[10538]:  * Running on http://192.168.1.6:5000
+Jul 16 22:45:41 raspberrypi python[10538]: Press CTRL+C to quit
+Jul 16 22:45:41 raspberrypi python[10538]:  * Restarting with stat
+Jul 16 22:45:41 raspberrypi python[10539]:  * Debugger is active!
+Jul 16 22:45:41 raspberrypi python[10539]:  * Debugger PIN: 619-483-187
+Jul 16 22:55:28 raspberrypi systemd[1]: Stopping record-collection.service - Discogs Flask API...
+Jul 16 22:55:28 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 16 22:55:28 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 22:55:28 raspberrypi systemd[1]: record-collection.service: Consumed 2.738s CPU time.
+Jul 16 22:55:28 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 22:55:28 raspberrypi python[10839]:  * Serving Flask app 'main'
+Jul 16 22:55:28 raspberrypi python[10839]:  * Debug mode: on
+Jul 16 22:55:28 raspberrypi python[10839]: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 16 22:55:28 raspberrypi python[10839]:  * Running on all addresses (0.0.0.0)
+Jul 16 22:55:28 raspberrypi python[10839]:  * Running on http://127.0.0.1:5000
+Jul 16 22:55:28 raspberrypi python[10839]:  * Running on http://192.168.1.6:5000
+Jul 16 22:55:28 raspberrypi python[10839]: Press CTRL+C to quit
+Jul 16 22:55:28 raspberrypi python[10839]:  * Restarting with stat
+Jul 16 22:55:29 raspberrypi python[10840]:  * Debugger is active!
+Jul 16 22:55:29 raspberrypi python[10840]:  * Debugger PIN: 619-483-187
+Jul 16 23:03:32 raspberrypi python[10840]: 127.0.0.1 - - [16/Jul/2025 23:03:32] "GET / HTTP/1.0" 200 -
+Jul 16 23:03:32 raspberrypi python[10840]: 127.0.0.1 - - [16/Jul/2025 23:03:32] "GET /static/js/main.655e66d8.js HTTP/1.0" 404 -
+Jul 16 23:06:28 raspberrypi systemd[1]: Stopping record-collection.service - Discogs Flask API...
+Jul 16 23:06:28 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 16 23:06:28 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 23:06:28 raspberrypi systemd[1]: record-collection.service: Consumed 3.032s CPU time.
+Jul 16 23:06:28 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 23:06:29 raspberrypi python[11137]:  * Serving Flask app 'main'
+Jul 16 23:06:29 raspberrypi python[11137]:  * Debug mode: on
+Jul 16 23:06:29 raspberrypi python[11137]: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 16 23:06:29 raspberrypi python[11137]:  * Running on all addresses (0.0.0.0)
+Jul 16 23:06:29 raspberrypi python[11137]:  * Running on http://127.0.0.1:5000
+Jul 16 23:06:29 raspberrypi python[11137]:  * Running on http://192.168.1.6:5000
+Jul 16 23:06:29 raspberrypi python[11137]: Press CTRL+C to quit
+Jul 16 23:06:29 raspberrypi python[11137]:  * Restarting with stat
+Jul 16 23:06:29 raspberrypi python[11138]:  * Debugger is active!
+Jul 16 23:06:29 raspberrypi python[11138]:  * Debugger PIN: 619-483-187
+Jul 16 23:06:35 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:06:35] "GET / HTTP/1.0" 200 -
+Jul 16 23:06:35 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:06:35] "GET /static/js/main.655e66d8.js HTTP/1.0" 404 -
+Jul 16 23:06:56 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:06:56] "GET / HTTP/1.0" 200 -
+Jul 16 23:06:56 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:06:56] "GET /static/js/main.655e66d8.js HTTP/1.0" 404 -
+Jul 16 23:06:56 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:06:56] "GET /favicon.ico HTTP/1.0" 404 -
+Jul 16 23:09:33 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:09:33] "GET / HTTP/1.0" 200 -
+Jul 16 23:09:33 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:09:33] "GET /static/js/main.655e66d8.js HTTP/1.0" 404 -
+Jul 16 23:13:48 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:13:48] "GET / HTTP/1.0" 200 -
+Jul 16 23:13:48 raspberrypi python[11138]: 127.0.0.1 - - [16/Jul/2025 23:13:48] "GET /static/js/main.655e66d8.js HTTP/1.0" 404 -
+Jul 16 23:16:03 raspberrypi systemd[1]: Stopping record-collection.service - Discogs Flask API...
+Jul 16 23:16:03 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 16 23:16:03 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 16 23:16:03 raspberrypi systemd[1]: record-collection.service: Consumed 2.776s CPU time.
+Jul 16 23:16:03 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 16 23:16:03 raspberrypi python[11384]:  * Serving Flask app 'main'
+Jul 16 23:16:03 raspberrypi python[11384]:  * Debug mode: on
+Jul 16 23:16:04 raspberrypi python[11384]: WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 16 23:16:04 raspberrypi python[11384]:  * Running on all addresses (0.0.0.0)
+Jul 16 23:16:04 raspberrypi python[11384]:  * Running on http://127.0.0.1:5000
+Jul 16 23:16:04 raspberrypi python[11384]:  * Running on http://192.168.1.6:5000
+Jul 16 23:16:04 raspberrypi python[11384]: Press CTRL+C to quit
+Jul 16 23:16:04 raspberrypi python[11384]:  * Restarting with stat
+Jul 16 23:16:04 raspberrypi python[11385]:  * Debugger is active!
+Jul 16 23:16:04 raspberrypi python[11385]:  * Debugger PIN: 619-483-187
+Jul 16 23:16:06 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:16:06] "GET / HTTP/1.0" 304 -
+Jul 16 23:16:06 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:16:06] "GET /static/js/main.655e66d8.js HTTP/1.0" 200 -
+Jul 16 23:16:07 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:16:07] "GET /static/js/main.655e66d8.js.map HTTP/1.0" 200 -
+Jul 16 23:24:14 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:24:14] "GET / HTTP/1.0" 200 -
+Jul 16 23:24:14 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:24:14] "GET /static/js/main.655e66d8.js HTTP/1.0" 200 -
+Jul 16 23:24:14 raspberrypi python[11385]: 127.0.0.1 - - [16/Jul/2025 23:24:14] "GET /favicon.ico HTTP/1.0" 404 -
+Jul 18 09:47:16 raspberrypi python[11385]:  * Detected change in '/home/glyphic/record-collection/backend/main.py', reloading
+Jul 18 09:47:16 raspberrypi python[11384]:  * Restarting with stat
+Jul 18 09:47:16 raspberrypi python[11384]: Traceback (most recent call last):
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/home/glyphic/record-collection/backend/main.py", line 61, in <module>
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/home/glyphic/record-collection/backend/venv/lib/python3.11/site-packages/flask/app.py", line 662, in run
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/home/glyphic/record-collection/backend/venv/lib/python3.11/site-packages/werkzeug/serving.py", line 1115, in run_simple
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/home/glyphic/record-collection/backend/venv/lib/python3.11/site-packages/werkzeug/_reloader.py", line 469, in run_with_reloader
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/home/glyphic/record-collection/backend/venv/lib/python3.11/site-packages/werkzeug/_reloader.py", line 275, in restart_with_reloader
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/usr/lib/python3.11/subprocess.py", line 389, in call
+Jul 18 09:47:16 raspberrypi python[11384]:     with Popen(*popenargs, **kwargs) as p:
+Jul 18 09:47:16 raspberrypi python[11384]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/usr/lib/python3.11/subprocess.py", line 1024, in __init__
+Jul 18 09:47:16 raspberrypi python[11384]:     self._execute_child(args, executable, preexec_fn, close_fds,
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/usr/lib/python3.11/subprocess.py", line 1789, in _execute_child
+Jul 18 09:47:16 raspberrypi python[11384]:     self._posix_spawn(args, executable, env, restore_signals,
+Jul 18 09:47:16 raspberrypi python[11384]:   File "/usr/lib/python3.11/subprocess.py", line 1733, in _posix_spawn
+Jul 18 09:47:16 raspberrypi python[11384]:     self.pid = os.posix_spawn(executable, args, env, **kwargs)
+Jul 18 09:47:16 raspberrypi python[11384]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Jul 18 09:47:16 raspberrypi python[11384]: FileNotFoundError: [Errno 2] No such file or directory: '/home/glyphic/record-collection/backend/venv/bin/python'
+Jul 18 09:47:16 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=1/FAILURE[0m
+Jul 18 09:47:16 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:16 raspberrypi systemd[1]: record-collection.service: Consumed 5min 43.805s CPU time.
+Jul 18 09:47:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 18 09:47:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi systemd[1]: record-collection.service: Consumed 5min 43.805s CPU time.
+Jul 18 09:47:17 raspberrypi (python)[15047]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 18 09:47:17 raspberrypi (python)[15047]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 18 09:47:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi (python)[15048]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 18 09:47:17 raspberrypi (python)[15048]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 18 09:47:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi (python)[15049]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 18 09:47:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi (python)[15049]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 18 09:47:17 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi (python)[15050]: record-collection.service: Failed to locate executable /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory
+Jul 18 09:47:17 raspberrypi (python)[15050]: [0;1;31m[0;1;39m[0;1;31mrecord-collection.service: Failed at step EXEC spawning /home/glyphic/record-collection/backend/venv/bin/python: No such file or directory[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 18 09:47:17 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:18 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 18 09:47:18 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:18 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 09:47:18 raspberrypi systemd[1]: [0;1;39m[0;1;31m[0;1;39mrecord-collection.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 18 09:47:18 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:18 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 6.
+Jul 18 09:47:18 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 09:47:18 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 18 09:47:18 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'exit-code'.[0m
+Jul 18 09:47:18 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
+Jul 18 10:21:55 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 10:21:55 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 18 10:21:55 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 1.
+Jul 18 10:21:55 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 10:21:55 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 10:21:55 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 2.
+Jul 18 10:21:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 3.
+Jul 18 10:21:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 4.
+Jul 18 10:21:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: Started record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Deactivated successfully.
+Jul 18 10:21:56 raspberrypi systemd[1]: record-collection.service: Scheduled restart job, restart counter is at 5.
+Jul 18 10:21:56 raspberrypi systemd[1]: Stopped record-collection.service - Discogs Flask API.
+Jul 18 10:21:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Start request repeated too quickly.[0m
+Jul 18 10:21:56 raspberrypi systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mrecord-collection.service: Failed with result 'start-limit-hit'.[0m
+Jul 18 10:21:56 raspberrypi systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start record-collection.service - Discogs Flask API.[0m
