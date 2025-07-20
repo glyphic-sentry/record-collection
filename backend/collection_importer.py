@@ -9,8 +9,8 @@ from io import BytesIO
 DISCOGS_USER = "glyphic"
 DISCOGS_TOKEN = "BBBCoVxGwUDXlufRBSfCJFLCqlbHyUkSZOApLZRh"
 API_BASE = "https://api.discogs.com"
-IMG_DIR = "static/images"
-THUMB_DIR = "static/images/thumbs"
+IMG_DIR = "images"
+THUMB_DIR = "images/thumbs"
 COLLECTION_PATH = "collection.json"
 
 os.makedirs(IMG_DIR, exist_ok=True)
