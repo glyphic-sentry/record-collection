@@ -63,6 +63,13 @@ export default function ListView() {
     alert("Bins updated. Be sure to persist changes manually if needed.");
   };
 
+  const resetBinMarkings = () => {
+    const resetAlbums = albums.map((album) => ({ ...album, bin: undefined }));
+    setAlbums(resetAlbums);
+    setEndOfBinIds([]);
+    alert("All bin markings have been reset.");
+  };
+
   const toggleEndOfBin = (id) => {
     setEndOfBinIds((prev) =>
       prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
@@ -111,6 +118,12 @@ export default function ListView() {
           onClick={applyBinMarking}
         >
           Apply Bin Marking
+        </button>
+        <button
+          className="border rounded px-2 py-1 bg-red-500 text-white"
+          onClick={resetBinMarkings}
+        >
+          Reset Bins
         </button>
         <span>Click a row to toggle End of Bin marker</span>
       </div>
