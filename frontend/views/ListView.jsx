@@ -8,7 +8,7 @@ export default function ListView() {
   const [sortDirection, setSortDirection] = useState("desc");
   const [isDark, setIsDark] = useState(true);
   const [binNumber, setBinNumber] = useState(1);
-  const [endOfBinId, setEndOfBinId] = useState(null);
+  const [endOfBinIds, setEndOfBinIds] = useState([]);
 
   useEffect(() => {
     fetch("/api/collection")
@@ -52,16 +52,21 @@ export default function ListView() {
   const applyBinMarking = () => {
     const updated = [...albums];
     const sorted = [...updated].sort((a, b) => a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title));
-    let currentBin = binNumber - 1;
+    let currentBin = 1;
     for (let i = 0; i < sorted.length; i++) {
-      if (sorted[i].id === endOfBinId) {
-        currentBin++;
-        continue;
-      }
       sorted[i].bin = currentBin;
+      if (endOfBinIds.includes(sorted[i].id)) {
+        currentBin++;
+      }
     }
     setAlbums(sorted);
     alert("Bins updated. Be sure to persist changes manually if needed.");
+  };
+
+  const toggleEndOfBin = (id) => {
+    setEndOfBinIds((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -107,7 +112,7 @@ export default function ListView() {
         >
           Apply Bin Marking
         </button>
-        <span>Click a row to set End of Bin marker</span>
+        <span>Click a row to toggle End of Bin marker</span>
       </div>
 
       <table className="w-full table-auto border-collapse">
@@ -127,8 +132,8 @@ export default function ListView() {
           {filtered.map((album) => (
             <tr
               key={album.id}
-              className={`border-t border-gray-600 hover:bg-gray-800 cursor-pointer ${album.id === endOfBinId ? "bg-red-400" : ""}`}
-              onClick={() => setEndOfBinId(album.id)}
+              className={`border-t border-gray-600 hover:bg-gray-800 cursor-pointer ${endOfBinIds.includes(album.id) ? "bg-red-400" : ""}`}
+              onClick={() => toggleEndOfBin(album.id)}
             >
               <td className="p-2">
                 <img src={album.thumb || album.cover_image} alt={album.title} className="h-16 w-16 object-cover rounded" />
