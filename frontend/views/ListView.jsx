@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 /*
  * ListView displays the collection in a tabular form.  To improve
  * usability across different devices and user preferences, this
- * version introduces a view size control.  Users can choose
- * between "compact", "comfortable" and "large" modes, which adjust
- * the size of the album art and padding within the table.  All
- * functionality from the original view (sorting, filtering, bin
- * marking) is preserved.
+ * version introduces a view size control and a search-by selector.
+ * Users can choose between "compact", "comfortable" and "large" modes,
+ * and can limit the search to title, artist or both fields.
+ * Sorting, filtering and bin marking are preserved.
  */
 
 export default function ListView() {
@@ -19,11 +18,13 @@ export default function ListView() {
   const [isDark, setIsDark] = useState(true);
   const [binNumber, setBinNumber] = useState(1);
   const [endOfBinIds, setEndOfBinIds] = useState([]);
-  // New state controlling the size of the list view.  Possible
-  // values: 'compact', 'comfortable', 'large'.  Default is
-  // comfortable to match the original styling.
+  // New state controlling the size of the list view.
+  // Possible values: 'compact', 'comfortable', 'large'.  Default is comfortable.
   const [viewSize, setViewSize] = useState("comfortable");
+  // State controlling which field the search box applies to: title, artist or both.
+  const [searchBy, setSearchBy] = useState("title");
 
+  // Fetch albums on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -31,6 +32,7 @@ export default function ListView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
+  // Toggle sorting on column headers
   const handleSort = (field) => {
     if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -40,18 +42,27 @@ export default function ListView() {
     }
   };
 
-  // Determine table cell padding and image size classes based on the
-  // selected view size.  Compact uses small paddings and icons,
-  // comfortable uses the original values, and large increases
-  // everything for easier viewing.
+  // Class names for image size, cell padding and text size based on view size
   const imageSizeClass =
-    viewSize === "compact" ? "h-10 w-10" : viewSize === "large" ? "h-24 w-24" : "h-16 w-16";
+    viewSize === "compact"
+      ? "h-6 w-6"
+      : viewSize === "large"
+      ? "h-40 w-40"
+      : "h-16 w-16";
   const cellPaddingClass =
-    viewSize === "compact" ? "p-1" : viewSize === "large" ? "p-3" : "p-2";
+    viewSize === "compact"
+      ? "p-1"
+      : viewSize === "large"
+      ? "p-4"
+      : "p-2";
   const textSizeClass =
-    viewSize === "compact" ? "text-sm" : viewSize === "large" ? "text-lg" : "text-base";
+    viewSize === "compact"
+      ? "text-xs"
+      : viewSize === "large"
+      ? "text-lg"
+      : "text-base";
 
-  // Perform sorting and filtering
+  // Sort albums based on the selected field and direction
   const sortedAlbums = [...albums].sort((a, b) => {
     let result = 0;
     if (sortField === "artist") {
@@ -66,16 +77,26 @@ export default function ListView() {
     return sortDirection === "asc" ? result : -result;
   });
 
+  // Filter albums based on search and genre. Respect the searchBy selector.
   const filtered = sortedAlbums.filter((album) => {
-    const matchSearch =
-      album.title.toLowerCase().includes(search.toLowerCase()) ||
-      album.artist.toLowerCase().includes(search.toLowerCase());
+    let matchSearch;
+    if (searchBy === "artist") {
+      matchSearch = album.artist.toLowerCase().includes(search.toLowerCase());
+    } else if (searchBy === "title") {
+      matchSearch = album.title.toLowerCase().includes(search.toLowerCase());
+    } else {
+      matchSearch =
+        album.title.toLowerCase().includes(search.toLowerCase()) ||
+        album.artist.toLowerCase().includes(search.toLowerCase());
+    }
     const matchGenre = genre === "" || album.genre === genre;
     return matchSearch && matchGenre;
   });
 
+  // Unique genre list
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
+  // Bin marking logic remains unchanged
   const applyBinMarking = () => {
     const updated = [...albums];
     const sorted = [...updated].sort(
@@ -100,7 +121,9 @@ export default function ListView() {
   };
 
   const toggleEndOfBin = (id) => {
-    setEndOfBinIds((prev) => (prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]));
+    setEndOfBinIds((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+    );
   };
 
   return (
@@ -109,8 +132,9 @@ export default function ListView() {
         isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-      {/* Search, genre filter and dark mode toggle */}
+      {/* Search, search-by, genre filter and dark mode toggle */}
       <div className="flex flex-wrap gap-2 justify-between items-center mb-4">
+        {/* Search input */}
         <input
           className="border rounded px-2 py-1 text-black w-full sm:w-auto"
           placeholder="Search albums..."
@@ -118,6 +142,18 @@ export default function ListView() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
+        {/* Search by: title, artist or both */}
+        <select
+          className="border rounded px-2 py-1 text-black"
+          value={searchBy}
+          onChange={(e) => setSearchBy(e.target.value)}
+        >
+          <option value="title">Title</option>
+          <option value="artist">Artist</option>
+          <option value="both">Both</option>
+        </select>
+
+        {/* Genre filter */}
         <select
           className="border rounded px-2 py-1 text-black"
           value={genre}
@@ -131,7 +167,11 @@ export default function ListView() {
           ))}
         </select>
 
-        <button className="border rounded px-2 py-1" onClick={() => setIsDark(!isDark)}>
+        {/* Dark mode toggle */}
+        <button
+          className="border rounded px-2 py-1"
+          onClick={() => setIsDark(!isDark)}
+        >
           Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
       </div>
@@ -175,6 +215,7 @@ export default function ListView() {
         <span>Click a row to toggle End of Bin marker</span>
       </div>
 
+      {/* Table displaying the albums */}
       <table className="w-full table-auto border-collapse">
         <thead>
           <tr className="bg-gray-700 text-left">
@@ -212,12 +253,24 @@ export default function ListView() {
                     className={`${imageSizeClass} object-cover rounded`}
                   />
                 </td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.title}</td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.artist}</td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.year}</td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.genre}</td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.label}</td>
-                <td className={`${cellPaddingClass} ${textSizeClass}`}>{album.bin || ""}</td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.title}
+                </td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.artist}
+                </td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.year}
+                </td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.genre}
+                </td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.label}
+                </td>
+                <td className={`${cellPaddingClass} ${textSizeClass}`}>
+                  {album.bin || ""}
+                </td>
                 <td className={cellPaddingClass}>
                   <a
                     href={`https://www.discogs.com/release/${album.id}`}
