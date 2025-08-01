@@ -5,12 +5,17 @@ import "slick-carousel/slick/slick-theme.css";
 import "../src/index.css";
 
 /*
- * GalleryView renders a carousel of album art. This version:
- * - Provides custom navigation buttons (❮ and ❯) instead of Slick’s arrows, so we can hide overflow and avoid scrollbars.
- * - Removes the hover transform/scale to eliminate flicker.
- * - Keeps album art in its original aspect ratio using object‑contain and a gradient card background.
- * - Translates the mouse wheel to horizontal navigation via onWheel.
- * - Detects drag vs. click so dragging the carousel doesn’t open the modal.
+ * GalleryView renders a carousel of album art.
+ * This version:
+ * - Implements custom navigation buttons (❮ and ❯) to avoid clipping,
+ *   with adaptive colors for dark/light mode.
+ * - Reduces album card height on larger screens (h-64, lg:h-56,
+ *   md:h-48, sm:h-40) to minimise vertical overflow.
+ * - Increases the number of visible slides on wider screens (up to 6).
+ * - Constrains the gallery width on very large monitors using
+ *   max-w-screen-xl and centres it with mx-auto.
+ * - Detects drag vs. click to prevent accidental modal openings.
+ * - Converts vertical scroll to horizontal carousel navigation.
  */
 
 export default function GalleryView() {
@@ -31,6 +36,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
+  // Sorting logic
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const artistCompare = a.artist.localeCompare(b.artist);
@@ -39,6 +45,7 @@ export default function GalleryView() {
     return new Date(b.date_added) - new Date(a.date_added);
   });
 
+  // Filtering by search and genre
   const filtered = sortedAlbums.filter((album) => {
     const matchSearch =
       album.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -49,42 +56,43 @@ export default function GalleryView() {
 
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
+  // Theme-dependent styling
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
-
   const arrowBaseClass = isDark ? "text-white" : "text-black";
   const arrowHoverClass = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
-  // Convert vertical wheel movement to horizontal carousel navigation
-const handleWheel = (e) => {
-  // Prevent default scrolling behaviour
-  e.preventDefault();
-  // Stop the event from bubbling up and scrolling the page
-  e.stopPropagation();
-  if (e.deltaY < 0) {
-    sliderRef.current?.slickPrev();
-  } else {
-    sliderRef.current?.slickNext();
-  }
-};
+  // Wheel handler converts vertical scroll to horizontal navigation
+  const handleWheel = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.deltaY < 0) {
+      sliderRef.current?.slickPrev();
+    } else {
+      sliderRef.current?.slickNext();
+    }
+  };
 
-
+  // Slick settings with more responsive breakpoints
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: false, // we provide our own buttons
+    arrows: false,
     swipe: true,
     swipeToSlide: true,
     centerMode: false,
     centerPadding: "0",
     waitForAnimate: false,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 1600, settings: { slidesToShow: 6 } },
+      { breakpoint: 1280, settings: { slidesToShow: 5 } },
+      { breakpoint: 1024, settings: { slidesToShow: 4 } },
+      { breakpoint: 768, settings: { slidesToShow: 3 } },
+      { breakpoint: 640, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
@@ -154,13 +162,13 @@ const handleWheel = (e) => {
         </button>
       </div>
 
-      {/* Carousel wrapper */}
+      {/* Carousel wrapper: constrain width and hide overflow */}
       <div
-        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
+        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden max-w-screen-xl mx-auto"
         onWheel={handleWheel}
       >
         <div className="relative w-full">
-          {/* Custom navigation arrows */}
+          {/* Custom arrows */}
           <button
             type="button"
             className={
@@ -196,7 +204,7 @@ const handleWheel = (e) => {
             {filtered.map((album) => (
               <div
                 key={album.id}
-                className="px-2 cursor-pointer select-none focus:outline-none flex flex-col items-center justify-center"
+                className="cursor-pointer select-none focus:outline-none flex flex-col items-center justify-center"
                 onMouseDown={(e) => {
                   dragStartXRef.current = e.clientX;
                   draggingRef.current = false;
@@ -238,7 +246,7 @@ const handleWheel = (e) => {
               >
                 <div
                   className={
-                    "relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
+                    "relative w-full h-64 lg:h-56 md:h-48 sm:h-40 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
                     cardBgClass
                   }
                 >
