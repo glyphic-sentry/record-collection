@@ -16,6 +16,7 @@ export default function GalleryView() {
   const draggingRef = useRef(false);
   const [slidesToShow, setSlidesToShow] = useState(4);
 
+  // Fetch collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -23,11 +24,12 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
+  // Dynamically calculate slides based on window width
   useEffect(() => {
     const updateSlides = () => {
       const width = window.innerWidth;
       let slides = Math.floor(width / 250);
-      slides = Math.max(1, Math.min(slides, 6));
+      slides = Math.max(1, Math.min(slides, 6)); // clamp between 1 and 6
       setSlidesToShow(slides);
     };
     updateSlides();
@@ -35,40 +37,44 @@ export default function GalleryView() {
     return () => window.removeEventListener("resize", updateSlides);
   }, []);
 
-  // Sort and filter albums; now include track titles in the search
+  // Sort albums by selected field
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
-      const c = a.artist.localeCompare(b.artist);
-      return c !== 0 ? c : a.title.localeCompare(b.title);
+      const artistCompare = a.artist.localeCompare(b.artist);
+      return artistCompare !== 0
+        ? artistCompare
+        : a.title.localeCompare(b.title);
     }
     return new Date(b.date_added) - new Date(a.date_added);
   });
+
+  // Filter albums by search term (match title, artist or track names) and genre
   const searchLower = search.toLowerCase();
-  const filtered = sorted.filter((a) => {
-    // Check track titles for the search term
+  const filtered = sorted.filter((album) => {
     const trackMatch =
-      a.tracklist &&
-      a.tracklist.some((t) => {
+      album.tracklist &&
+      album.tracklist.some((t) => {
         const title = typeof t === "string" ? t : t.title;
         return title.toLowerCase().includes(searchLower);
       });
-
     const matchSearch =
-      a.title.toLowerCase().includes(searchLower) ||
-      a.artist.toLowerCase().includes(searchLower) ||
+      album.title.toLowerCase().includes(searchLower) ||
+      album.artist.toLowerCase().includes(searchLower) ||
       trackMatch;
-
-    const matchGenre = genre === "" || a.genre === genre;
+    const matchGenre = genre === "" || album.genre === genre;
     return matchSearch && matchGenre;
   });
+
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
+  // Theme-based classes
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
   const arrowBase = isDark ? "text-white" : "text-black";
   const arrowHover = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
+  // Translate vertical scroll to horizontal navigation
   const handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -78,6 +84,7 @@ export default function GalleryView() {
     }
   };
 
+  // Slick settings
   const settings = {
     dots: false,
     infinite: true,
@@ -92,10 +99,9 @@ export default function GalleryView() {
     waitForAnimate: false,
   };
 
+  // Modal close handler
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") {
-      setModalAlbum(null);
-    }
+    if (e.target.id === "modal-backdrop") setModalAlbum(null);
   };
 
   return (
@@ -106,7 +112,7 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Controls */}
+      {/* Search and filter controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           id="search"
@@ -148,12 +154,14 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Slider */}
+      {/* Carousel */}
       <div
         className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
-        <div className="relative w-full max-w-screen-xl mx-auto">
+        {/* Full-width slider container */}
+        <div className="relative w-full">
+          {/* Custom navigation buttons */}
           <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
@@ -189,9 +197,7 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -208,9 +214,7 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -236,7 +240,7 @@ export default function GalleryView() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Detail modal */}
       {modalAlbum && (
         <div
           id="modal-backdrop"
@@ -263,7 +267,9 @@ export default function GalleryView() {
                 <p className="font-semibold">Tracklist:</p>
                 <ul className="list-disc ml-5">
                   {modalAlbum.tracklist.map((track, i) => (
-                    <li key={i}>{typeof track === "string" ? track : track.title}</li>
+                    <li key={i}>
+                      {typeof track === "string" ? track : track.title}
+                    </li>
                   ))}
                 </ul>
               </div>
