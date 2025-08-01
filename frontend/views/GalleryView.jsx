@@ -40,9 +40,8 @@ export default function GalleryView() {
 
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  const cardBgClass = isDark
-    ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
-    : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
+  // Use a simple background instead of a gradient
+  const cardBgClass = isDark ? "bg-gray-800" : "bg-white";
   const arrowBaseClass = isDark ? "text-white" : "text-black";
   const arrowHoverClass = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
@@ -141,7 +140,7 @@ export default function GalleryView() {
 
       {/* Carousel wrapper */}
       <div
-        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
+        className="flex-grow flex items-center justify-center px-4 pt-2 overflow-hidden"
         onWheel={handleWheel}
       >
         <div className="relative w-full">
@@ -223,7 +222,7 @@ export default function GalleryView() {
               >
                 <div
                   className={
-                    "relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
+                    "relative w-full h-60 md:h-48 sm:h-40 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
                     cardBgClass
                   }
                 >
