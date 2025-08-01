@@ -2,3 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Custom styles for the GalleryView carousel.
+ * The Slick carousel uses nested elements (.slick-slider, .slick-list,
+ * .slick-track) that default to `overflow: hidden`, causing the
+ * navigation arrows to be clipped.  Assigning a parent class
+ * `.gallery-slider` and overriding overflow to `visible` ensures the
+ * arrows remain fully visible.
+ */
+.gallery-slider .slick-slider,
+.gallery-slider .slick-list,
+.gallery-slider .slick-track {
+  overflow: visible !important;
+}
+
+/*
+ * Tailwind configuration import.  This file mirrors the upstream
+ * project's index.css, bringing in Tailwind's base, component and
+ * utility layers.  Additional styles can be appended here if
+ * necessary.
+ */
