@@ -10,7 +10,18 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Legend,
+  Brush,
 } from "recharts";
+
+/*
+ * ReportView renders a set of charts summarising the user's record
+ * collection.  The original page included a bar chart labelled
+ * "By Label" that duplicated the genre chart but grouped by label.  To
+ * declutter the report, this graph has been removed.  To make the
+ * remaining charts more interactive, a `Brush` component has been
+ * added to each chart.  The brush allows the user to zoom into a
+ * subset of the data and scroll through it by dragging the handles.
+ */
 
 export default function ReportView() {
   const [albums, setAlbums] = useState([]);
@@ -25,19 +36,16 @@ export default function ReportView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
+  // Apply genre and label filters to the album list
   const filteredAlbums = albums.filter((album) => {
     const genreMatch = genreFilter === "" || album.genre === genreFilter;
     const labelMatch = labelFilter === "" || album.label === labelFilter;
     return genreMatch && labelMatch;
   });
 
+  // Compute counts grouped by genre and decade
   const genreCounts = filteredAlbums.reduce((acc, album) => {
     acc[album.genre] = (acc[album.genre] || 0) + 1;
-    return acc;
-  }, {});
-
-  const labelCounts = filteredAlbums.reduce((acc, album) => {
-    acc[album.label] = (acc[album.label] || 0) + 1;
     return acc;
   }, {});
 
@@ -47,15 +55,18 @@ export default function ReportView() {
     return acc;
   }, {});
 
+  // Build a time series of album additions for the growth chart
   const growthData = filteredAlbums.reduce((acc, album) => {
     const date = album.date_added?.slice(0, 10);
     if (date) {
-      if (!acc.find((d) => d.date === date)) {
+      const existing = acc.find((d) => d.date === date);
+      if (!existing) {
         acc.push({ date, count: 1 });
       } else {
-        acc.find((d) => d.date === date).count++;
+        existing.count++;
       }
     }
+    // Sort chronologically so the line chart is ordered correctly
     return acc.sort((a, b) => new Date(a.date) - new Date(b.date));
   }, []);
 
@@ -72,7 +83,9 @@ export default function ReportView() {
         >
           <option value="">All Genres</option>
           {genres.map((g) => (
-            <option key={g} value={g}>{g}</option>
+            <option key={g} value={g}>
+              {g}
+            </option>
           ))}
         </select>
 
@@ -83,19 +96,19 @@ export default function ReportView() {
         >
           <option value="">All Labels</option>
           {labels.map((l) => (
-            <option key={l} value={l}>{l}</option>
+            <option key={l} value={l}>
+              {l}
+            </option>
           ))}
         </select>
 
-        <button
-          className="border rounded px-2 py-1"
-          onClick={() => setIsDark(!isDark)}
-        >
+        <button className="border rounded px-2 py-1" onClick={() => setIsDark(!isDark)}>
           Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* By Genre Chart */}
         <div>
           <h2 className="text-xl font-bold mb-2">By Genre</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -103,23 +116,15 @@ export default function ReportView() {
               <XAxis dataKey="name" interval={0} angle={-45} textAnchor="end" height={100} />
               <YAxis />
               <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" />
               <Bar dataKey="value" fill="#8884d8" />
+              {/* Brush provides zoom and scroll for the bar chart */}
+              <Brush dataKey="name" height={30} stroke="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div>
-          <h2 className="text-xl font-bold mb-2">By Label</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={Object.entries(labelCounts).map(([name, value]) => ({ name, value }))}>
-              <XAxis dataKey="name" interval={0} angle={-45} textAnchor="end" height={100} />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
+        {/* By Decade Chart */}
         <div>
           <h2 className="text-xl font-bold mb-2">By Decade</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -127,12 +132,15 @@ export default function ReportView() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" />
               <Bar dataKey="value" fill="#ffc658" />
+              <Brush dataKey="name" height={30} stroke="#ffc658" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div>
+        {/* Collection Growth Over Time Chart */}
+        <div className="md:col-span-2">
           <h2 className="text-xl font-bold mb-2">Collection Growth Over Time</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={growthData}>
@@ -142,6 +150,7 @@ export default function ReportView() {
               <Tooltip />
               <Legend />
               <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              <Brush dataKey="date" height={30} stroke="#8884d8" />
             </LineChart>
           </ResponsiveContainer>
         </div>
