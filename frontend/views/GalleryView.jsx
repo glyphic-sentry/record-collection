@@ -35,6 +35,7 @@ export default function GalleryView() {
     return () => window.removeEventListener("resize", updateSlides);
   }, []);
 
+  // Sort and filter albums; now include track titles in the search
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const c = a.artist.localeCompare(b.artist);
@@ -42,10 +43,21 @@ export default function GalleryView() {
     }
     return new Date(b.date_added) - new Date(a.date_added);
   });
+  const searchLower = search.toLowerCase();
   const filtered = sorted.filter((a) => {
+    // Check track titles for the search term
+    const trackMatch =
+      a.tracklist &&
+      a.tracklist.some((t) => {
+        const title = typeof t === "string" ? t : t.title;
+        return title.toLowerCase().includes(searchLower);
+      });
+
     const matchSearch =
-      a.title.toLowerCase().includes(search.toLowerCase()) ||
-      a.artist.toLowerCase().includes(search.toLowerCase());
+      a.title.toLowerCase().includes(searchLower) ||
+      a.artist.toLowerCase().includes(searchLower) ||
+      trackMatch;
+
     const matchGenre = genre === "" || a.genre === genre;
     return matchSearch && matchGenre;
   });
@@ -59,8 +71,11 @@ export default function GalleryView() {
 
   const handleWheel = (e) => {
     e.preventDefault();
-    if (e.deltaY < 0) sliderRef.current?.slickPrev();
-    else sliderRef.current?.slickNext();
+    if (e.deltaY < 0) {
+      sliderRef.current?.slickPrev();
+    } else {
+      sliderRef.current?.slickNext();
+    }
   };
 
   const settings = {
@@ -91,11 +106,12 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
+      {/* Controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           id="search"
           className="border rounded px-2 py-1 text-black w-1/3"
-          placeholder="Search albums..."
+          placeholder="Search albums or tracks..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -132,7 +148,7 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Restore the previous working slider layout */}
+      {/* Slider */}
       <div
         className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
@@ -146,7 +162,7 @@ export default function GalleryView() {
           >
             ❮
           </button>
-            <button
+          <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 right-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
             onClick={() => sliderRef.current?.slickNext()}
@@ -173,7 +189,9 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) setModalAlbum(album);
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -190,7 +208,9 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) setModalAlbum(album);
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -216,7 +236,7 @@ export default function GalleryView() {
         </div>
       </div>
 
-      {/* Modal with improved tracklist rendering */}
+      {/* Modal */}
       {modalAlbum && (
         <div
           id="modal-backdrop"
