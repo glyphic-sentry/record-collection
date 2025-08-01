@@ -4,16 +4,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../src/index.css";
 
-/*
- * GalleryView renders a carousel of album art with dynamic slide count.
- * It:
- * - Shows more albums as the window width increases (1 to 6 slides).
- * - Uses custom arrows so overflow can be hidden cleanly.
- * - Detects dragging vs. clicking to avoid unwanted modal openings.
- * - Converts mouse wheel movement into horizontal carousel navigation.
- * - Centers the carousel by wrapping it in a max-width container with mx-auto.
- */
-
 export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
   const [search, setSearch] = useState("");
@@ -26,6 +16,7 @@ export default function GalleryView() {
   const draggingRef = useRef(false);
   const [slidesToShow, setSlidesToShow] = useState(4);
 
+  // Fetch albums on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -33,13 +24,12 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Update slidesToShow based on window width
+  // Dynamically adjust slidesToShow based on window width
   useEffect(() => {
     const updateSlides = () => {
       const width = window.innerWidth;
       let slides = Math.floor(width / 250);
-      if (slides < 1) slides = 1;
-      if (slides > 6) slides = 6;
+      slides = Math.max(1, Math.min(slides, 6));
       setSlidesToShow(slides);
     };
     updateSlides();
@@ -50,10 +40,8 @@ export default function GalleryView() {
   // Sort and filter albums
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
-      const artistCompare = a.artist.localeCompare(b.artist);
-      return artistCompare !== 0
-        ? artistCompare
-        : a.title.localeCompare(b.title);
+      const c = a.artist.localeCompare(b.artist);
+      return c !== 0 ? c : a.title.localeCompare(b.title);
     }
     return new Date(b.date_added) - new Date(a.date_added);
   });
@@ -64,33 +52,31 @@ export default function GalleryView() {
     const matchGenre = genre === "" || a.genre === genre;
     return matchSearch && matchGenre;
   });
+
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Styling variables for dark/light mode
+  // Theme styling
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
   const arrowBase = isDark ? "text-white" : "text-black";
   const arrowHover = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
-  // Translate vertical scroll into horizontal navigation
+  // Convert vertical scroll to horizontal navigation
   const handleWheel = (e) => {
     e.preventDefault();
-    if (e.deltaY < 0) {
-      sliderRef.current?.slickPrev();
-    } else {
-      sliderRef.current?.slickNext();
-    }
+    if (e.deltaY < 0) sliderRef.current?.slickPrev();
+    else sliderRef.current?.slickNext();
   };
 
-  // Slick settings
+  // Slick settings using dynamic slidesToShow
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow,
     slidesToScroll: 1,
-    arrows: false, // We use custom buttons
+    arrows: false,
     swipe: true,
     swipeToSlide: true,
     centerMode: false,
@@ -98,26 +84,21 @@ export default function GalleryView() {
     waitForAnimate: false,
   };
 
-  // Close modal on backdrop click
+  // Modal close handler
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") {
-      setModalAlbum(null);
-    }
+    if (e.target.id === "modal-backdrop") setModalAlbum(null);
   };
 
   return (
     <div
-      className={`min-h-full flex flex-col justify-center ${
+      className={`min-h-full flex flex-col ${
         isDark
           ? "bg-gradient-to-b from-black via-gray-900 to-black text-white"
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Search/Filter controls */}
+      {/* Search and filter controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
-        <label htmlFor="search" className="sr-only">
-          Search albums
-        </label>
         <input
           id="search"
           className="border rounded px-2 py-1 text-black w-1/3"
@@ -126,9 +107,6 @@ export default function GalleryView() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <label htmlFor="genre" className="sr-only">
-          Filter by genre
-        </label>
         <select
           id="genre"
           className="border rounded px-2 py-1 text-black"
@@ -143,9 +121,6 @@ export default function GalleryView() {
           ))}
         </select>
 
-        <label htmlFor="sort" className="sr-only">
-          Sort albums
-        </label>
         <select
           id="sort"
           className="border rounded px-2 py-1 text-black"
@@ -164,14 +139,14 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel section */}
+      {/* Carousel wrapper with spacing (pt-4) */}
       <div
         className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
-        {/* Center the slider in a max-width container */}
+        {/* Centered slider container */}
         <div className="relative w-full max-w-screen-xl mx-auto">
-          {/* Custom navigation buttons */}
+          {/* Custom navigation arrows */}
           <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
@@ -189,11 +164,7 @@ export default function GalleryView() {
             ❯
           </button>
 
-          <Slider
-            ref={sliderRef}
-            {...settings}
-            className="overflow-hidden w-full"
-          >
+          <Slider ref={sliderRef} {...settings} className="overflow-hidden w-full">
             {filtered.map((album) => (
               <div
                 key={album.id}
@@ -211,9 +182,7 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -230,9 +199,7 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -262,7 +229,9 @@ export default function GalleryView() {
       {modalAlbum && (
         <div
           id="modal-backdrop"
-          onClick={handleBackdropClick}
+          onClick={(e) => {
+            if (e.target.id === "modal-backdrop") setModalAlbum(null);
+          }}
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn"
         >
           <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl">
