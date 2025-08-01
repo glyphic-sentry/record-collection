@@ -5,6 +5,10 @@ import json
 from urllib.parse import urlparse
 from PIL import Image
 
+# Add the fetch_playlists import from your playlist module
+# (adjust the module name/path if necessary)
+from fetch_playlists import fetch_playlists
+
 DISCOGS_USER = "glyphic"
 DISCOGS_TOKEN = "BBBCoVxGwUDXlufRBSfCJFLCqlbHyUkSZOApLZRh"
 API_BASE = "https://api.discogs.com"
@@ -118,3 +122,5 @@ def save_collection(albums):
 if __name__ == "__main__":
     albums = fetch_collection()
     save_collection(albums)
+    # Call fetch_playlists after updating the collection
+    fetch_playlists()
