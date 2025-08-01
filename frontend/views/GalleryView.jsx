@@ -16,7 +16,7 @@ export default function GalleryView() {
   const draggingRef = useRef(false);
   const [slidesToShow, setSlidesToShow] = useState(4);
 
-  // Fetch albums on mount
+  // Fetch collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -24,7 +24,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Dynamically adjust slidesToShow based on window width
+  // Dynamically calculate slides to show based on window width
   useEffect(() => {
     const updateSlides = () => {
       const width = window.innerWidth;
@@ -52,10 +52,9 @@ export default function GalleryView() {
     const matchGenre = genre === "" || a.genre === genre;
     return matchSearch && matchGenre;
   });
-
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Theme styling
+  // Styling variables based on theme
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
@@ -65,11 +64,14 @@ export default function GalleryView() {
   // Convert vertical scroll to horizontal navigation
   const handleWheel = (e) => {
     e.preventDefault();
-    if (e.deltaY < 0) sliderRef.current?.slickPrev();
-    else sliderRef.current?.slickNext();
+    if (e.deltaY < 0) {
+      sliderRef.current?.slickPrev();
+    } else {
+      sliderRef.current?.slickNext();
+    }
   };
 
-  // Slick settings using dynamic slidesToShow
+  // Slick settings with dynamic slidesToShow
   const settings = {
     dots: false,
     infinite: true,
@@ -84,9 +86,11 @@ export default function GalleryView() {
     waitForAnimate: false,
   };
 
-  // Modal close handler
+  // Close modal when clicking outside of it
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") setModalAlbum(null);
+    if (e.target.id === "modal-backdrop") {
+      setModalAlbum(null);
+    }
   };
 
   return (
@@ -139,14 +143,14 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel wrapper with spacing (pt-4) */}
+      {/* Carousel section */}
       <div
         className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
-        {/* Centered slider container */}
-        <div className="relative w-full max-w-screen-xl mx-auto">
-          {/* Custom navigation arrows */}
+        {/* The flex wrapper centers the slider */}
+        <div className="relative w-full max-w-screen-xl mx-auto flex justify-center">
+          {/* Custom arrows */}
           <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
@@ -164,7 +168,7 @@ export default function GalleryView() {
             ❯
           </button>
 
-          <Slider ref={sliderRef} {...settings} className="overflow-hidden w-full">
+          <Slider ref={sliderRef} {...settings} className="overflow-hidden">
             {filtered.map((album) => (
               <div
                 key={album.id}
@@ -182,7 +186,9 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) setModalAlbum(album);
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -199,7 +205,9 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) setModalAlbum(album);
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -229,9 +237,7 @@ export default function GalleryView() {
       {modalAlbum && (
         <div
           id="modal-backdrop"
-          onClick={(e) => {
-            if (e.target.id === "modal-backdrop") setModalAlbum(null);
-          }}
+          onClick={handleBackdropClick}
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn"
         >
           <div className="bg-white text-black rounded p-4 max-w-md w-full relative overflow-y-auto max-h-[90vh] shadow-xl">
@@ -243,31 +249,18 @@ export default function GalleryView() {
               &times;
             </button>
             <h2 className="text-xl font-bold mb-2">{modalAlbum.title}</h2>
-            <p>
-              <strong>Artist:</strong> {modalAlbum.artist}
-            </p>
-            <p>
-              <strong>Year:</strong> {modalAlbum.year}
-            </p>
-            <p>
-              <strong>Genre:</strong> {modalAlbum.genre}
-            </p>
-            <p>
-              <strong>Label:</strong> {modalAlbum.label}
-            </p>
-            <p>
-              <strong>Format:</strong> {modalAlbum.format}
-            </p>
-            <p>
-              <strong>Date Added:</strong>{" "}
-              {new Date(modalAlbum.date_added).toLocaleDateString()}
-            </p>
+            <p><strong>Artist:</strong> {modalAlbum.artist}</p>
+            <p><strong>Year:</strong> {modalAlbum.year}</p>
+            <p><strong>Genre:</strong> {modalAlbum.genre}</p>
+            <p><strong>Label:</strong> {modalAlbum.label}</p>
+            <p><strong>Format:</strong> {modalAlbum.format}</p>
+            <p><strong>Date Added:</strong> {new Date(modalAlbum.date_added).toLocaleDateString()}</p>
             {modalAlbum.tracklist && modalAlbum.tracklist.length > 0 && (
               <div className="mt-2">
                 <p className="font-semibold">Tracklist:</p>
                 <ul className="list-disc ml-5">
                   {modalAlbum.tracklist.map((track, i) => (
-                    <li key={i}>{track.title}</li>
+                    <li key={i}>{typeof track === "string" ? track : track.title}</li>
                   ))}
                 </ul>
               </div>
