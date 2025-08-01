@@ -6,26 +6,24 @@ import "../src/index.css";
 
 /*
  * GalleryView renders a carousel of album art.  This implementation
- * addresses a few usability and styling bugs present in the original
- * component:
+ * addresses several usability and styling issues from the original component:
  *
- *  1. The previous version wrapped each record cover in a div with a
- *     white background.  On dark mode this created an obvious white
- *     border on the right-hand side of every cover, which looked like
- *     extra whitespace.  The container around the image now uses a
- *     conditional background (dark grey when the theme is dark and
- *     white when the theme is light) so there is no stark contrast.
- *  2. Slick‑carousel positions its navigation arrows absolutely
- *     relative to the slider container.  The parent wrapper used
- *     `overflow-hidden`, which clipped the arrows and made them hard to
- *     click.  Swapping this for `overflow-visible` allows the arrows
- *     to protrude past the container edges without being cut off.
- *  3. Scrolling through the gallery with a mouse wheel previously
- *     scrolled the entire page.  A custom `handleWheel` handler has
- *     been added to translate vertical wheel events into horizontal
- *     carousel navigation.  This makes browsing the gallery feel
- *     natural and fixes the unpleasant scrolling behaviour reported by
- *     users.
+ *  1. The original component wrapped each record cover in a solid background
+ *     (white in light mode and dark grey in dark mode).  Because the Slick
+ *     carousel cell can be wider than the image, this background produced a
+ *     visible bar on the right side of each cover.  We replaced the wrapper
+ *     with a full‑width card that uses a subtle gradient.  The card scales
+ *     with the slide and gives the cover art a modern look while eliminating
+ *     any visible gaps.  The album art itself is rendered with
+ *     `object-contain` so it preserves its original aspect ratio.
+ *  2. Slick‑carousel positions its navigation arrows absolutely relative to the
+ *     slider container.  The parent wrapper used `overflow-hidden`, which
+ *     clipped the arrows and made them hard to click.  Switching to
+ *     `overflow-visible` allows the arrows to protrude past the container
+ *     edges without being cut off.
+ *  3. A custom mouse‑wheel handler translates vertical scroll into horizontal
+ *     carousel navigation, preventing the page from scrolling while browsing
+ *     the gallery.
  */
 
 export default function GalleryView() {
@@ -35,12 +33,9 @@ export default function GalleryView() {
   const [isDark, setIsDark] = useState(true);
   const [sort, setSort] = useState("recent");
   const [modalAlbum, setModalAlbum] = useState(null);
-  // We no longer paginate the album list; all albums are passed to the
-  // carousel.  Removing visibleCount prevents the slider from looping
-  // prematurely once a small subset of items has been displayed.
   const sliderRef = useRef(null);
 
-  // Fetch the collection once on mount
+  // Fetch the collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -48,7 +43,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Sort albums based on the selected sort mode
+  // Sort albums based on the selected mode
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const artistCompare = a.artist.localeCompare(b.artist);
@@ -58,10 +53,7 @@ export default function GalleryView() {
     return new Date(b.date_added) - new Date(a.date_added);
   });
 
-  // Filter albums based on the search and genre filters.  The
-  // resulting list is passed directly to the carousel; we do not
-  // limit the number of visible items so that all albums can be
-  // browsed without restarting from the beginning.
+  // Filter albums by search and genre
   const filtered = sortedAlbums.filter((album) => {
     const matchSearch =
       album.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -70,15 +62,15 @@ export default function GalleryView() {
     return matchSearch && matchGenre;
   });
 
-  // Compute the list of unique genres for the filter dropdown
+  // Unique genres for the filter dropdown
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  /**
-   * Translate vertical mouse wheel movement into horizontal carousel
-   * navigation.  When the user scrolls up we move backwards, and
-   * scrolling down moves forwards.  Calling `preventDefault()` stops
-   * the page itself from scrolling and keeps focus on the gallery.
-   */
+  // Card background gradient depending on light/dark mode
+  const cardBgClass = isDark
+    ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
+    : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
+
+  // Convert vertical scroll to horizontal slide navigation
   const handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -88,10 +80,7 @@ export default function GalleryView() {
     }
   };
 
-  // Slick carousel settings.  Centre mode has been disabled to
-  // eliminate excess padding that showed up as white space on the
-  // right-hand side of the covers.  All other behaviour matches the
-  // original implementation.
+  // Slick carousel settings
   const settings = {
     dots: false,
     infinite: true,
@@ -111,7 +100,7 @@ export default function GalleryView() {
     ],
   };
 
-  // Close modal when clicking outside of it
+  // Close modal on backdrop click
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") {
       setModalAlbum(null);
@@ -126,6 +115,7 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
+      {/* Controls for search, genre filter, sort mode and dark/light toggle */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <label htmlFor="search" className="sr-only">
           Search albums
@@ -168,30 +158,44 @@ export default function GalleryView() {
           <option value="alphabetical">Alphabetical</option>
         </select>
 
-        <button className="border rounded px-2 py-1" onClick={() => setIsDark(!isDark)}>
+        <button
+          className="border rounded px-2 py-1"
+          onClick={() => setIsDark(!isDark)}
+        >
           Toggle {isDark ? "Light" : "Dark"} Mode
         </button>
       </div>
 
-      {/* The outer wrapper previously used `overflow-hidden` which clipped the carousel arrows.
-          Switching to `overflow-visible` allows the arrows to extend beyond the container boundaries. */}
+      {/* Carousel container: overflow-visible allows arrows to extend */}
       <div className="flex-grow flex items-center justify-center px-4 pt-4 overflow-visible">
-        <Slider ref={sliderRef} {...settings} className="overflow-visible w-full" onWheel={handleWheel}>
+        <Slider
+          ref={sliderRef}
+          {...settings}
+          className="overflow-visible w-full"
+          onWheel={handleWheel}
+        >
           {filtered.map((album) => (
             <div
               key={album.id}
               className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center"
               onClick={() => setModalAlbum(album)}
             >
+              {/* Modern card for the album art: large, responsive, gradient background */}
               <div
-                className={`${
-                  isDark ? "bg-gray-800" : "bg-white"
-                } rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105`}
+                className={`relative w-full h-72 rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105 ${cardBgClass}`}
               >
-                <img src={album.cover_image} alt={album.title} className="h-64 w-64 object-cover" />
+                <img
+                  src={album.cover_image}
+                  alt={album.title}
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <p className="text-center mt-2 text-base font-medium w-full truncate">{album.title}</p>
-              <p className="text-center text-sm text-gray-400 w-full truncate">{album.artist}</p>
+              <p className="text-center mt-2 text-base font-medium w-full truncate">
+                {album.title}
+              </p>
+              <p className="text-center text-sm text-gray-400 w-full truncate">
+                {album.artist}
+              </p>
             </div>
           ))}
         </Slider>
@@ -229,7 +233,8 @@ export default function GalleryView() {
               <strong>Format:</strong> {modalAlbum.format}
             </p>
             <p>
-              <strong>Date Added:</strong> {new Date(modalAlbum.date_added).toLocaleDateString()}
+              <strong>Date Added:</strong>{" "}
+              {new Date(modalAlbum.date_added).toLocaleDateString()}
             </p>
             {modalAlbum.tracklist && modalAlbum.tracklist.length > 0 && (
               <div className="mt-2">
