@@ -6,15 +6,20 @@ import "../src/index.css";
 
 /*
  * GalleryView renders a carousel of album art.  This implementation
- * addresses several usability and styling issues:
+ * addresses a few usability and styling bugs present in the original
+ * component:
  *
- * 1. Each cover is displayed in a full-width, gradient-backed card
- *    with rounded corners and a subtle hover lift.  The image uses
- *    `object-contain`, so its original aspect ratio is preserved.
- * 2. Carousel arrows are no longer clipped thanks to a CSS override on
- *    the Slick internal elements.
- * 3. The mouse wheel scrolls horizontally through the gallery, and
- *    dragging the carousel no longer triggers the detail modal.
+ *  1. The album art is displayed in a full-width card with a subtle
+ *     gradient background.  The card scales with the slide and uses
+ *     `object-contain` on the image so the original aspect ratio is
+ *     preserved without cropping.  Responsive height classes
+ *     (h-72 md:h-60 sm:h-48) ensure the cards shrink on smaller screens.
+ *  2. Slick‑carousel positions its navigation arrows absolutely.
+ *     Combined with a CSS override on `.gallery-slider`, the arrows
+ *     remain fully visible rather than being clipped by overflow.
+ *  3. Scrolling through the gallery with the mouse wheel moves the
+ *     carousel horizontally via `onWheel`, and drag detection prevents
+ *     accidental modal opening during a swipe.
  */
 
 export default function GalleryView() {
@@ -37,7 +42,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Sort albums by the selected mode
+  // Sort albums based on the selected mode
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const artistCompare = a.artist.localeCompare(b.artist);
@@ -46,7 +51,7 @@ export default function GalleryView() {
     return new Date(b.date_added) - new Date(a.date_added);
   });
 
-  // Filter by search and genre
+  // Filter albums by search and genre
   const filtered = sortedAlbums.filter((album) => {
     const matchSearch =
       album.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,14 +60,15 @@ export default function GalleryView() {
     return matchSearch && matchGenre;
   });
 
+  // Extract unique genres for the filter dropdown
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Gradient background for the card based on theme
+  // Card background gradient depends on dark/light mode
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
 
-  // Translate vertical scroll to horizontal carousel movement
+  // Convert vertical scroll to horizontal navigation
   const handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -72,6 +78,7 @@ export default function GalleryView() {
     }
   };
 
+  // Slick carousel settings
   const settings = {
     dots: false,
     infinite: true,
@@ -91,7 +98,7 @@ export default function GalleryView() {
     ],
   };
 
-  // Close modal when clicking outside of it
+  // Close modal when clicking outside the card
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") {
       setModalAlbum(null);
@@ -106,7 +113,7 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Search, filters and theme toggle */}
+      {/* Search, genre filter, sort mode and dark/light toggle */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <label htmlFor="search" className="sr-only">
           Search albums
@@ -157,9 +164,9 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel wrapper: captures wheel events and uses CSS class for visible overflow */}
+      {/* Carousel wrapper: hide vertical overflow, allow horizontal overflow, and capture wheel events */}
       <div
-        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-visible gallery-slider"
+        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-y-hidden overflow-x-visible gallery-slider"
         onWheel={handleWheel}
       >
         <Slider
@@ -211,7 +218,7 @@ export default function GalleryView() {
               }}
             >
               <div
-                className={`relative w-full h-72 rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105 ${cardBgClass}`}
+                className={`relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105 ${cardBgClass}`}
               >
                 <img
                   src={album.cover_image}
