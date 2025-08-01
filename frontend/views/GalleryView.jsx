@@ -15,6 +15,22 @@ export default function GalleryView() {
   const dragStartXRef = useRef(null);
   const draggingRef = useRef(false);
 
+  // Dynamically determine how many slides to show based on window width
+  const [slidesToShow, setSlidesToShow] = useState(4);
+  useEffect(() => {
+    const updateSlides = () => {
+      const width = window.innerWidth;
+      let slides = Math.floor(width / 250); // ~250px per card
+      if (slides < 1) slides = 1;
+      if (slides > 6) slides = 6;
+      setSlidesToShow(slides);
+    };
+    updateSlides();
+    window.addEventListener("resize", updateSlides);
+    return () => window.removeEventListener("resize", updateSlides);
+  }, []);
+
+  // Fetch collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -22,43 +38,41 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  const sortedAlbums = [...albums].sort((a, b) => {
+  // Sorting and filtering
+  const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
-      const artistCompare = a.artist.localeCompare(b.artist);
-      return artistCompare !== 0 ? artistCompare : a.title.localeCompare(b.title);
+      const c = a.artist.localeCompare(b.artist);
+      return c !== 0 ? c : a.title.localeCompare(b.title);
     }
     return new Date(b.date_added) - new Date(a.date_added);
   });
-
-  const filtered = sortedAlbums.filter((album) => {
+  const filtered = sorted.filter((a) => {
     const matchSearch =
-      album.title.toLowerCase().includes(search.toLowerCase()) ||
-      album.artist.toLowerCase().includes(search.toLowerCase());
-    const matchGenre = genre === "" || album.genre === genre;
+      a.title.toLowerCase().includes(search.toLowerCase()) ||
+      a.artist.toLowerCase().includes(search.toLowerCase());
+    const matchGenre = genre === "" || a.genre === genre;
     return matchSearch && matchGenre;
   });
 
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
+  const cardBgClass = isDark
+    ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
+    : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
+  const arrowBase = isDark ? "text-white" : "text-black";
+  const arrowHover = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
-  // Use a simple background instead of a gradient
-  const cardBgClass = isDark ? "bg-gray-800" : "bg-white";
-  const arrowBaseClass = isDark ? "text-white" : "text-black";
-  const arrowHoverClass = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
-
+  // Convert vertical wheel scroll to horizontal slider navigation
   const handleWheel = (e) => {
     e.preventDefault();
-    if (e.deltaY < 0) {
-      sliderRef.current?.slickPrev();
-    } else {
-      sliderRef.current?.slickNext();
-    }
+    if (e.deltaY < 0) sliderRef.current?.slickPrev();
+    else sliderRef.current?.slickNext();
   };
 
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow,
     slidesToScroll: 1,
     arrows: false,
     swipe: true,
@@ -66,93 +80,70 @@ export default function GalleryView() {
     centerMode: false,
     centerPadding: "0",
     waitForAnimate: false,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 480, settings: { slidesToShow: 1 } },
-    ],
   };
 
+  // Modal close handler
   const handleBackdropClick = (e) => {
-    if (e.target.id === "modal-backdrop") {
-      setModalAlbum(null);
-    }
+    if (e.target.id === "modal-backdrop") setModalAlbum(null);
   };
 
   return (
     <div
-      className={`min-h-screen flex flex-col justify-center ${
+      className={`min-h-full flex flex-col justify-center ${
         isDark
           ? "bg-gradient-to-b from-black via-gray-900 to-black text-white"
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Controls */}
+      {/* Top controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
-        <label htmlFor="search" className="sr-only">
-          Search albums
-        </label>
-        <input
-          id="search"
-          className="border rounded px-2 py-1 text-black w-1/3"
-          placeholder="Search albums..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <label htmlFor="genre" className="sr-only">
-          Filter by genre
-        </label>
-        <select
-          id="genre"
-          className="border rounded px-2 py-1 text-black"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-        >
-          <option value="">All Genres</option>
-          {genres.map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="sort" className="sr-only">
-          Sort albums
-        </label>
-        <select
-          id="sort"
-          className="border rounded px-2 py-1 text-black"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="recent">Recent</option>
-          <option value="alphabetical">Alphabetical</option>
-        </select>
-
-        <button
-          className="border rounded px-2 py-1"
-          onClick={() => setIsDark(!isDark)}
-        >
-          Toggle {isDark ? "Light" : "Dark"} Mode
-        </button>
+      <input
+        id="search"
+        className="border rounded px-2 py-1 text-black w-1/3"
+        placeholder="Search albums..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <select
+        id="genre"
+        className="border rounded px-2 py-1 text-black"
+        value={genre}
+        onChange={(e) => setGenre(e.target.value)}
+      >
+        <option value="">All Genres</option>
+        {genres.map((g) => (
+          <option key={g} value={g}>
+            {g}
+          </option>
+        ))}
+      </select>
+      <select
+        id="sort"
+        className="border rounded px-2 py-1 text-black"
+        value={sort}
+        onChange={(e) => setSort(e.target.value)}
+      >
+        <option value="recent">Recent</option>
+        <option value="alphabetical">Alphabetical</option>
+      </select>
+      <button
+        className="border rounded px-2 py-1"
+        onClick={() => setIsDark(!isDark)}
+      >
+        Toggle {isDark ? "Light" : "Dark"} Mode
+      </button>
       </div>
 
-      {/* Carousel wrapper */}
+      {/* Carousel */}
       <div
-        className="flex-grow flex items-center justify-center px-4 pt-2 overflow-hidden"
+        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
         <div className="relative w-full">
           {/* Custom arrows */}
           <button
             type="button"
-            className={
-              "absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl " +
-              arrowBaseClass +
-              " " +
-              arrowHoverClass
-            }
+            className={`absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
             onClick={() => sliderRef.current?.slickPrev()}
             aria-label="Previous"
           >
@@ -160,23 +151,14 @@ export default function GalleryView() {
           </button>
           <button
             type="button"
-            className={
-              "absolute top-1/2 -translate-y-1/2 right-2 z-10 text-3xl " +
-              arrowBaseClass +
-              " " +
-              arrowHoverClass
-            }
+            className={`absolute top-1/2 -translate-y-1/2 right-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
             onClick={() => sliderRef.current?.slickNext()}
             aria-label="Next"
           >
             ❯
           </button>
 
-          <Slider
-            ref={sliderRef}
-            {...settings}
-            className="overflow-hidden w-full"
-          >
+          <Slider ref={sliderRef} {...settings} className="overflow-hidden w-full">
             {filtered.map((album) => (
               <div
                 key={album.id}
@@ -194,9 +176,7 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -213,23 +193,18 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
               >
                 <div
-                  className={
-                    "relative w-full h-60 md:h-48 sm:h-40 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
-                    cardBgClass
-                  }
+                  className={`relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg ${cardBgClass}`}
                 >
                   <img
                     src={album.cover_image}
                     alt={album.title}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <p className="text-center mt-2 text-base font-medium w-full truncate">
@@ -244,7 +219,7 @@ export default function GalleryView() {
         </div>
       </div>
 
-      {/* Detail modal overlay */}
+      {/* Detail modal */}
       {modalAlbum && (
         <div
           id="modal-backdrop"
