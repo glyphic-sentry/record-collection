@@ -6,24 +6,15 @@ import "../src/index.css";
 
 /*
  * GalleryView renders a carousel of album art.  This implementation
- * addresses several usability and styling issues from the original component:
+ * addresses several usability and styling issues:
  *
- *  1. The original component wrapped each record cover in a solid background
- *     (white in light mode and dark grey in dark mode).  Because the Slick
- *     carousel cell can be wider than the image, this background produced a
- *     visible bar on the right side of each cover.  We replaced the wrapper
- *     with a full‑width card that uses a subtle gradient.  The card scales
- *     with the slide and gives the cover art a modern look while eliminating
- *     any visible gaps.  The album art itself is rendered with
- *     `object-contain` so it preserves its original aspect ratio.
- *  2. Slick‑carousel positions its navigation arrows absolutely relative to the
- *     slider container.  The parent wrapper used `overflow-hidden`, which
- *     clipped the arrows and made them hard to click.  Switching to
- *     `overflow-visible` allows the arrows to protrude past the container
- *     edges without being cut off.
- *  3. A custom mouse‑wheel handler translates vertical scroll into horizontal
- *     carousel navigation, preventing the page from scrolling while browsing
- *     the gallery.
+ * 1. Each cover is displayed in a full-width, gradient-backed card
+ *    with rounded corners and a subtle hover lift.  The image uses
+ *    `object-contain`, so its original aspect ratio is preserved.
+ * 2. Carousel arrows are no longer clipped thanks to a CSS override on
+ *    the Slick internal elements.
+ * 3. The mouse wheel scrolls horizontally through the gallery, and
+ *    dragging the carousel no longer triggers the detail modal.
  */
 
 export default function GalleryView() {
@@ -35,7 +26,10 @@ export default function GalleryView() {
   const [modalAlbum, setModalAlbum] = useState(null);
   const sliderRef = useRef(null);
 
-  // Fetch the collection on mount
+  // Refs to detect drag vs. click on a slide
+  const dragStartXRef = useRef(null);
+  const draggingRef = useRef(false);
+
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -43,17 +37,16 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Sort albums based on the selected mode
+  // Sort albums by the selected mode
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const artistCompare = a.artist.localeCompare(b.artist);
-      if (artistCompare !== 0) return artistCompare;
-      return a.title.localeCompare(b.title);
+      return artistCompare !== 0 ? artistCompare : a.title.localeCompare(b.title);
     }
     return new Date(b.date_added) - new Date(a.date_added);
   });
 
-  // Filter albums by search and genre
+  // Filter by search and genre
   const filtered = sortedAlbums.filter((album) => {
     const matchSearch =
       album.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -62,15 +55,14 @@ export default function GalleryView() {
     return matchSearch && matchGenre;
   });
 
-  // Unique genres for the filter dropdown
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Card background gradient depending on light/dark mode
+  // Gradient background for the card based on theme
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
 
-  // Convert vertical scroll to horizontal slide navigation
+  // Translate vertical scroll to horizontal carousel movement
   const handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -80,7 +72,6 @@ export default function GalleryView() {
     }
   };
 
-  // Slick carousel settings
   const settings = {
     dots: false,
     infinite: true,
@@ -100,7 +91,7 @@ export default function GalleryView() {
     ],
   };
 
-  // Close modal on backdrop click
+  // Close modal when clicking outside of it
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") {
       setModalAlbum(null);
@@ -115,7 +106,7 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Controls for search, genre filter, sort mode and dark/light toggle */}
+      {/* Search, filters and theme toggle */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <label htmlFor="search" className="sr-only">
           Search albums
@@ -166,21 +157,59 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel container: overflow-visible allows arrows to extend */}
-      <div className="flex-grow flex items-center justify-center px-4 pt-4 overflow-visible">
+      {/* Carousel wrapper: captures wheel events and uses CSS class for visible overflow */}
+      <div
+        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-visible gallery-slider"
+        onWheel={handleWheel}
+      >
         <Slider
           ref={sliderRef}
           {...settings}
           className="overflow-visible w-full"
-          onWheel={handleWheel}
         >
           {filtered.map((album) => (
             <div
               key={album.id}
-              className="px-2 cursor-pointer focus:outline-none flex flex-col items-center justify-center"
-              onClick={() => setModalAlbum(album)}
+              className="px-2 cursor-pointer select-none focus:outline-none flex flex-col items-center justify-center"
+              onMouseDown={(e) => {
+                dragStartXRef.current = e.clientX;
+                draggingRef.current = false;
+              }}
+              onMouseMove={(e) => {
+                if (
+                  dragStartXRef.current !== null &&
+                  Math.abs(e.clientX - dragStartXRef.current) > 5
+                ) {
+                  draggingRef.current = true;
+                }
+              }}
+              onMouseUp={() => {
+                if (!draggingRef.current) {
+                  setModalAlbum(album);
+                }
+                dragStartXRef.current = null;
+                draggingRef.current = false;
+              }}
+              onTouchStart={(e) => {
+                dragStartXRef.current = e.touches[0].clientX;
+                draggingRef.current = false;
+              }}
+              onTouchMove={(e) => {
+                if (
+                  dragStartXRef.current !== null &&
+                  Math.abs(e.touches[0].clientX - dragStartXRef.current) > 5
+                ) {
+                  draggingRef.current = true;
+                }
+              }}
+              onTouchEnd={() => {
+                if (!draggingRef.current) {
+                  setModalAlbum(album);
+                }
+                dragStartXRef.current = null;
+                draggingRef.current = false;
+              }}
             >
-              {/* Modern card for the album art: large, responsive, gradient background */}
               <div
                 className={`relative w-full h-72 rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105 ${cardBgClass}`}
               >
