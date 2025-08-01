@@ -56,14 +56,19 @@ export default function GalleryView() {
   const arrowBaseClass = isDark ? "text-white" : "text-black";
   const arrowHoverClass = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
-  const handleWheel = (e) => {
-    e.preventDefault();
-    if (e.deltaY < 0) {
-      sliderRef.current?.slickPrev();
-    } else {
-      sliderRef.current?.slickNext();
-    }
-  };
+  // Convert vertical wheel movement to horizontal carousel navigation
+const handleWheel = (e) => {
+  // Prevent default scrolling behaviour
+  e.preventDefault();
+  // Stop the event from bubbling up and scrolling the page
+  e.stopPropagation();
+  if (e.deltaY < 0) {
+    sliderRef.current?.slickPrev();
+  } else {
+    sliderRef.current?.slickNext();
+  }
+};
+
 
   const settings = {
     dots: false,
