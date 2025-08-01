@@ -62,7 +62,9 @@ export default function ListView() {
       ? "text-lg"
       : "text-base";
 
-  // Sort albums based on the selected field and direction
+// ... imports and component setup ...
+
+  // Sort albums
   const sortedAlbums = [...albums].sort((a, b) => {
     let result = 0;
     if (sortField === "artist") {
@@ -77,21 +79,36 @@ export default function ListView() {
     return sortDirection === "asc" ? result : -result;
   });
 
-  // Filter albums based on search and genre. Respect the searchBy selector.
+  // Lowercase search once for efficiency
+  const searchLower = search.toLowerCase();
+
   const filtered = sortedAlbums.filter((album) => {
+    // Check title, artist and track titles
+    const trackMatch =
+      album.tracklist &&
+      album.tracklist.some((t) => {
+        const title = typeof t === "string" ? t : t.title;
+        return title.toLowerCase().includes(searchLower);
+      });
+
     let matchSearch;
     if (searchBy === "artist") {
-      matchSearch = album.artist.toLowerCase().includes(search.toLowerCase());
+      matchSearch = album.artist.toLowerCase().includes(searchLower) || trackMatch;
     } else if (searchBy === "title") {
-      matchSearch = album.title.toLowerCase().includes(search.toLowerCase());
+      matchSearch = album.title.toLowerCase().includes(searchLower) || trackMatch;
     } else {
       matchSearch =
-        album.title.toLowerCase().includes(search.toLowerCase()) ||
-        album.artist.toLowerCase().includes(search.toLowerCase());
+        album.title.toLowerCase().includes(searchLower) ||
+        album.artist.toLowerCase().includes(searchLower) ||
+        trackMatch;
     }
+
     const matchGenre = genre === "" || album.genre === genre;
     return matchSearch && matchGenre;
   });
+
+  // ... render the rest of your ListView ...
+
 
   // Unique genre list
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
