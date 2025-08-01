@@ -5,21 +5,12 @@ import "slick-carousel/slick/slick-theme.css";
 import "../src/index.css";
 
 /*
- * GalleryView renders a carousel of album art.  This implementation
- * addresses a few usability and styling bugs present in the original
- * component:
- *
- *  1. The album art is displayed in a full-width card with a subtle
- *     gradient background.  The card scales with the slide and uses
- *     `object-contain` on the image so the original aspect ratio is
- *     preserved without cropping.  Responsive height classes
- *     (h-72 md:h-60 sm:h-48) ensure the cards shrink on smaller screens.
- *  2. Slick‑carousel positions its navigation arrows absolutely.
- *     Combined with a CSS override on `.gallery-slider`, the arrows
- *     remain fully visible rather than being clipped by overflow.
- *  3. Scrolling through the gallery with the mouse wheel moves the
- *     carousel horizontally via `onWheel`, and drag detection prevents
- *     accidental modal opening during a swipe.
+ * GalleryView renders a carousel of album art. This version:
+ * - Provides custom navigation buttons (❮ and ❯) instead of Slick’s arrows, so we can hide overflow and avoid scrollbars.
+ * - Removes the hover transform/scale to eliminate flicker.
+ * - Keeps album art in its original aspect ratio using object‑contain and a gradient card background.
+ * - Translates the mouse wheel to horizontal navigation via onWheel.
+ * - Detects drag vs. click so dragging the carousel doesn’t open the modal.
  */
 
 export default function GalleryView() {
@@ -30,8 +21,6 @@ export default function GalleryView() {
   const [sort, setSort] = useState("recent");
   const [modalAlbum, setModalAlbum] = useState(null);
   const sliderRef = useRef(null);
-
-  // Refs to detect drag vs. click on a slide
   const dragStartXRef = useRef(null);
   const draggingRef = useRef(false);
 
@@ -42,7 +31,6 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Sort albums based on the selected mode
   const sortedAlbums = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const artistCompare = a.artist.localeCompare(b.artist);
@@ -51,7 +39,6 @@ export default function GalleryView() {
     return new Date(b.date_added) - new Date(a.date_added);
   });
 
-  // Filter albums by search and genre
   const filtered = sortedAlbums.filter((album) => {
     const matchSearch =
       album.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -60,15 +47,15 @@ export default function GalleryView() {
     return matchSearch && matchGenre;
   });
 
-  // Extract unique genres for the filter dropdown
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Card background gradient depends on dark/light mode
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
 
-  // Convert vertical scroll to horizontal navigation
+  const arrowBaseClass = isDark ? "text-white" : "text-black";
+  const arrowHoverClass = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
+
   const handleWheel = (e) => {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -78,14 +65,13 @@ export default function GalleryView() {
     }
   };
 
-  // Slick carousel settings
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false, // we provide our own buttons
     swipe: true,
     swipeToSlide: true,
     centerMode: false,
@@ -98,7 +84,6 @@ export default function GalleryView() {
     ],
   };
 
-  // Close modal when clicking outside the card
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") {
       setModalAlbum(null);
@@ -113,7 +98,7 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Search, genre filter, sort mode and dark/light toggle */}
+      {/* Controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <label htmlFor="search" className="sr-only">
           Search albums
@@ -164,77 +149,110 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel wrapper: hide vertical overflow, allow horizontal overflow, and capture wheel events */}
+      {/* Carousel wrapper */}
       <div
-        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-y-hidden overflow-x-visible gallery-slider"
+        className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
-        <Slider
-          ref={sliderRef}
-          {...settings}
-          className="overflow-visible w-full"
-        >
-          {filtered.map((album) => (
-            <div
-              key={album.id}
-              className="px-2 cursor-pointer select-none focus:outline-none flex flex-col items-center justify-center"
-              onMouseDown={(e) => {
-                dragStartXRef.current = e.clientX;
-                draggingRef.current = false;
-              }}
-              onMouseMove={(e) => {
-                if (
-                  dragStartXRef.current !== null &&
-                  Math.abs(e.clientX - dragStartXRef.current) > 5
-                ) {
-                  draggingRef.current = true;
-                }
-              }}
-              onMouseUp={() => {
-                if (!draggingRef.current) {
-                  setModalAlbum(album);
-                }
-                dragStartXRef.current = null;
-                draggingRef.current = false;
-              }}
-              onTouchStart={(e) => {
-                dragStartXRef.current = e.touches[0].clientX;
-                draggingRef.current = false;
-              }}
-              onTouchMove={(e) => {
-                if (
-                  dragStartXRef.current !== null &&
-                  Math.abs(e.touches[0].clientX - dragStartXRef.current) > 5
-                ) {
-                  draggingRef.current = true;
-                }
-              }}
-              onTouchEnd={() => {
-                if (!draggingRef.current) {
-                  setModalAlbum(album);
-                }
-                dragStartXRef.current = null;
-                draggingRef.current = false;
-              }}
-            >
+        <div className="relative w-full">
+          {/* Custom navigation arrows */}
+          <button
+            type="button"
+            className={
+              "absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl " +
+              arrowBaseClass +
+              " " +
+              arrowHoverClass
+            }
+            onClick={() => sliderRef.current?.slickPrev()}
+            aria-label="Previous"
+          >
+            ❮
+          </button>
+          <button
+            type="button"
+            className={
+              "absolute top-1/2 -translate-y-1/2 right-2 z-10 text-3xl " +
+              arrowBaseClass +
+              " " +
+              arrowHoverClass
+            }
+            onClick={() => sliderRef.current?.slickNext()}
+            aria-label="Next"
+          >
+            ❯
+          </button>
+
+          <Slider
+            ref={sliderRef}
+            {...settings}
+            className="overflow-hidden w-full"
+          >
+            {filtered.map((album) => (
               <div
-                className={`relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105 ${cardBgClass}`}
+                key={album.id}
+                className="px-2 cursor-pointer select-none focus:outline-none flex flex-col items-center justify-center"
+                onMouseDown={(e) => {
+                  dragStartXRef.current = e.clientX;
+                  draggingRef.current = false;
+                }}
+                onMouseMove={(e) => {
+                  if (
+                    dragStartXRef.current !== null &&
+                    Math.abs(e.clientX - dragStartXRef.current) > 5
+                  ) {
+                    draggingRef.current = true;
+                  }
+                }}
+                onMouseUp={() => {
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
+                  dragStartXRef.current = null;
+                  draggingRef.current = false;
+                }}
+                onTouchStart={(e) => {
+                  dragStartXRef.current = e.touches[0].clientX;
+                  draggingRef.current = false;
+                }}
+                onTouchMove={(e) => {
+                  if (
+                    dragStartXRef.current !== null &&
+                    Math.abs(e.touches[0].clientX - dragStartXRef.current) > 5
+                  ) {
+                    draggingRef.current = true;
+                  }
+                }}
+                onTouchEnd={() => {
+                  if (!draggingRef.current) {
+                    setModalAlbum(album);
+                  }
+                  dragStartXRef.current = null;
+                  draggingRef.current = false;
+                }}
               >
-                <img
-                  src={album.cover_image}
-                  alt={album.title}
-                  className="w-full h-full object-contain"
-                />
+                <div
+                  className={
+                    "relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg transition duration-300 " +
+                    cardBgClass
+                  }
+                >
+                  <img
+                    src={album.cover_image}
+                    alt={album.title}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <p className="text-center mt-2 text-base font-medium w-full truncate">
+                  {album.title}
+                </p>
+                <p className="text-center text-sm text-gray-400 w-full truncate">
+                  {album.artist}
+                </p>
               </div>
-              <p className="text-center mt-2 text-base font-medium w-full truncate">
-                {album.title}
-              </p>
-              <p className="text-center text-sm text-gray-400 w-full truncate">
-                {album.artist}
-              </p>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        </div>
       </div>
 
       {/* Detail modal overlay */}
