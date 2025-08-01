@@ -16,7 +16,6 @@ export default function GalleryView() {
   const draggingRef = useRef(false);
   const [slidesToShow, setSlidesToShow] = useState(4);
 
-  // Fetch collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -24,7 +23,6 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Dynamically calculate slides to show based on window width
   useEffect(() => {
     const updateSlides = () => {
       const width = window.innerWidth;
@@ -37,7 +35,6 @@ export default function GalleryView() {
     return () => window.removeEventListener("resize", updateSlides);
   }, []);
 
-  // Sort and filter albums
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       const c = a.artist.localeCompare(b.artist);
@@ -54,24 +51,18 @@ export default function GalleryView() {
   });
   const genres = [...new Set(albums.map((a) => a.genre).filter(Boolean))];
 
-  // Styling variables based on theme
   const cardBgClass = isDark
     ? "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"
     : "bg-gradient-to-br from-white via-gray-100 to-gray-200";
   const arrowBase = isDark ? "text-white" : "text-black";
   const arrowHover = isDark ? "hover:text-gray-400" : "hover:text-gray-600";
 
-  // Convert vertical scroll to horizontal navigation
   const handleWheel = (e) => {
     e.preventDefault();
-    if (e.deltaY < 0) {
-      sliderRef.current?.slickPrev();
-    } else {
-      sliderRef.current?.slickNext();
-    }
+    if (e.deltaY < 0) sliderRef.current?.slickPrev();
+    else sliderRef.current?.slickNext();
   };
 
-  // Slick settings with dynamic slidesToShow
   const settings = {
     dots: false,
     infinite: true,
@@ -86,7 +77,6 @@ export default function GalleryView() {
     waitForAnimate: false,
   };
 
-  // Close modal when clicking outside of it
   const handleBackdropClick = (e) => {
     if (e.target.id === "modal-backdrop") {
       setModalAlbum(null);
@@ -101,7 +91,6 @@ export default function GalleryView() {
           : "bg-gradient-to-b from-white via-gray-100 to-white text-black"
       }`}
     >
-      {/* Search and filter controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           id="search"
@@ -143,14 +132,12 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel section */}
+      {/* Restore the previous working slider layout */}
       <div
         className="flex-grow flex items-center justify-center px-4 pt-4 overflow-hidden"
         onWheel={handleWheel}
       >
-        {/* The flex wrapper centers the slider */}
-        <div className="relative w-full max-w-screen-xl mx-auto flex justify-center">
-          {/* Custom arrows */}
+        <div className="relative w-full max-w-screen-xl mx-auto">
           <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 left-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
@@ -159,7 +146,7 @@ export default function GalleryView() {
           >
             ❮
           </button>
-          <button
+            <button
             type="button"
             className={`absolute top-1/2 -translate-y-1/2 right-2 z-10 text-3xl ${arrowBase} ${arrowHover}`}
             onClick={() => sliderRef.current?.slickNext()}
@@ -168,7 +155,7 @@ export default function GalleryView() {
             ❯
           </button>
 
-          <Slider ref={sliderRef} {...settings} className="overflow-hidden">
+          <Slider ref={sliderRef} {...settings} className="overflow-hidden w-full">
             {filtered.map((album) => (
               <div
                 key={album.id}
@@ -186,9 +173,7 @@ export default function GalleryView() {
                   }
                 }}
                 onMouseUp={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -205,9 +190,7 @@ export default function GalleryView() {
                   }
                 }}
                 onTouchEnd={() => {
-                  if (!draggingRef.current) {
-                    setModalAlbum(album);
-                  }
+                  if (!draggingRef.current) setModalAlbum(album);
                   dragStartXRef.current = null;
                   draggingRef.current = false;
                 }}
@@ -233,7 +216,7 @@ export default function GalleryView() {
         </div>
       </div>
 
-      {/* Detail modal */}
+      {/* Modal with improved tracklist rendering */}
       {modalAlbum && (
         <div
           id="modal-backdrop"
