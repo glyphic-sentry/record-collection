@@ -62,6 +62,12 @@ def images(filename: str):
         return send_from_directory(IMAGES_DIR, filename)
     except FileNotFoundError:
         abort(404)
+        
+@app.route("/images/<path:filename>")
+def serve_image(filename):
+    # Note: use os.path.join to construct the directory path relative to this file
+    image_dir = os.path.join(os.path.dirname(__file__), "images")
+    return send_from_directory(image_dir, filename)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
