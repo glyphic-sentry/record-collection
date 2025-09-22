@@ -7,13 +7,13 @@ BASE_DIR = os.path.dirname(__file__)
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
 BIN_FILE = os.path.join(BASE_DIR, "bin_store.json")
-IMAGES_DIR = os.path.join(STATIC_DIR, "images")
+IMAGES_DIR = os.path.join(BASE_DIR, "images")  # where the importer saves album art
 
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
 CORS(app)
 
 def load_collection():
-    """Cache collection.json in memory; reload if file changes."""
+    """Read the album collection from disk."""
     with open(COLLECTION_FILE) as f:
         return json.load(f)
 
@@ -33,11 +33,11 @@ def get_collection():
     try:
         return jsonify(load_collection())
     except Exception:
-        # hide internal error details from clients
         return jsonify({"error": "Failed to read collection"}), 500
 
-@app.route("/api/bin/<int:album_id>", methods=["POST"])
+@app.route("/api/bin/ ", methods=["POST"])
 def update_bin(album_id: int):
+    """Update the bin assignment for a specific album."""
     if not request.is_json:
         return jsonify({"error": "Payload must be JSON"}), 400
     bins = {}
@@ -51,23 +51,19 @@ def update_bin(album_id: int):
 
 @app.route("/api/bin", methods=["GET"])
 def get_bins():
+    """Return the contents of the bin_store.json file."""
     if not os.path.exists(BIN_FILE):
         return jsonify({})
     with open(BIN_FILE) as f:
         return jsonify(json.load(f))
 
 @app.route("/images/<path:filename>")
-def images(filename: str):
+def serve_image(filename):
+    """Serve downloaded album art from the images directory."""
     try:
         return send_from_directory(IMAGES_DIR, filename)
     except FileNotFoundError:
         abort(404)
-        
-@app.route("/images/<path:filename>")
-def serve_image(filename):
-    # Note: use os.path.join to construct the directory path relative to this file
-    image_dir = os.path.join(os.path.dirname(__file__), "images")
-    return send_from_directory(image_dir, filename)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
