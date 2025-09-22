@@ -1,9 +1,7 @@
-// frontend/src/views/GalleryView.jsx
 import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../index.css"; // ensure global styles are available
 
 export default function GalleryView() {
   const [albums, setAlbums] = useState([]);
@@ -14,7 +12,7 @@ export default function GalleryView() {
   const [slidesToShow, setSlidesToShow] = useState(4);
   const sliderRef = useRef(null);
 
-  // Fetch the album collection on mount
+  // Fetch album collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -22,7 +20,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Adjust the number of slides based on window width
+  // Dynamically adjust the number of slides based on window width
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -34,12 +32,12 @@ export default function GalleryView() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Sort albums by selected criterion
+  // Sort albums
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       return a.title.localeCompare(b.title);
     }
-    // default: most recent first
+    // default to most recent first
     return new Date(b.date_added || 0) - new Date(a.date_added || 0);
   });
 
@@ -59,7 +57,7 @@ export default function GalleryView() {
     return matchTerm && matchGenre;
   });
 
-  // Slider configuration
+  // Slider settings for react-slick
   const settings = {
     dots: false,
     infinite: true,
@@ -77,7 +75,7 @@ export default function GalleryView() {
         isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-      {/* Search and filter controls */}
+      {/* Controls for search, genre, sort, and dark mode toggle */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           className="border rounded px-2 py-1 text-black w-full sm:w-1/3"
@@ -113,9 +111,8 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel */}
+      {/* Album carousel */}
       <div className="relative w-full px-4 pb-4 overflow-hidden">
-      {/* The ref is optional if you need to control the slider programmatically */}
         <Slider ref={sliderRef} {...settings}>
           {filtered.map((album) => (
             <div
@@ -123,7 +120,7 @@ export default function GalleryView() {
               className="cursor-pointer flex flex-col items-center justify-center p-2"
             >
               <div className="relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg">
-                {/* Use thumb if available, otherwise cover_image */}
+                {/* Use thumbnail first, then cover image as fallback */}
                 <img
                   src={album.thumb || album.cover_image}
                   alt={album.title}
