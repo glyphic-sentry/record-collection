@@ -1,61 +1,68 @@
-from flask import Flask, send_from_directory, jsonify, request, abort, make_response
-import os
-import json
+# backend/main.py
+import os, json
+from flask import Flask, jsonify, request, send_from_directory, abort
+from flask_cors import CORS
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(__file__)
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
+BIN_FILE = os.path.join(BASE_DIR, "bin_store.json")
+IMAGES_DIR = os.path.join(STATIC_DIR, "images")
+
+app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
+CORS(app)
+
+def load_collection():
+    """Cache collection.json in memory; reload if file changes."""
+    with open(COLLECTION_FILE) as f:
+        return json.load(f)
 
 @app.route("/")
-def serve_index():
-    index_path = os.path.join(app.static_folder, "index.html")
-    if os.path.exists(index_path):
-        return send_from_directory(app.static_folder, "index.html")
-    return make_response("index.html not found", 500)
+def index():
+    return send_from_directory(STATIC_DIR, "index.html")
 
 @app.route("/favicon.ico")
 def favicon():
     try:
-        return send_from_directory(app.static_folder, "favicon.ico")
-    except:
+        return send_from_directory(STATIC_DIR, "favicon.ico")
+    except FileNotFoundError:
         abort(404)
 
-@app.route("/api/collection")
+@app.route("/api/collection", methods=["GET"])
 def get_collection():
     try:
-        with open("collection.json") as f:
-            data = json.load(f)
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify(load_collection())
+    except Exception:
+        # hide internal error details from clients
+        return jsonify({"error": "Failed to read collection"}), 500
 
 @app.route("/api/bin/<int:album_id>", methods=["POST"])
-def update_bin(album_id):
+def update_bin(album_id: int):
     if not request.is_json:
-        return jsonify({"error": "Invalid request"}), 400
-    data = request.get_json()
-    bin_store = "bin_store.json"
-    if os.path.exists(bin_store):
-        with open(bin_store) as f:
+        return jsonify({"error": "Payload must be JSON"}), 400
+    bins = {}
+    if os.path.exists(BIN_FILE):
+        with open(BIN_FILE) as f:
             bins = json.load(f)
-    else:
-        bins = {}
-    bins[str(album_id)] = data.get("bin", "")
-    with open(bin_store, "w") as f:
-        json.dump(bins, f)
+    bins[str(album_id)] = request.json.get("bin", "")
+    with open(BIN_FILE, "w") as f:
+        json.dump(bins, f, indent=2)
     return jsonify({"success": True})
 
 @app.route("/api/bin", methods=["GET"])
 def get_bins():
-    try:
-        with open("bin_store.json") as f:
-            bins = json.load(f)
-        return jsonify(bins)
-    except:
+    if not os.path.exists(BIN_FILE):
         return jsonify({})
+    with open(BIN_FILE) as f:
+        return jsonify(json.load(f))
 
 @app.route("/images/<path:filename>")
-def serve_image(filename):
-    image_dir = os.path.join(os.path.dirname(__file__), "images")
-    return send_from_directory(image_dir, filename)
+def images(filename: str):
+    try:
+        return send_from_directory(IMAGES_DIR, filename)
+    except FileNotFoundError:
+        abort(404)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", "5000"))
+    app.run(host="0.0.0.0", port=port)
