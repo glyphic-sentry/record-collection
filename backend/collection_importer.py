@@ -1,126 +1,106 @@
-import os
-import requests
-import time
-import json
-from urllib.parse import urlparse
-from PIL import Image
+# backend/collection_importer.py
+import os, json, time, requests
+from typing import Dict, List
+from dotenv import load_dotenv
 
-# Add the fetch_playlists import from your playlist module
-# (adjust the module name/path if necessary)
-from fetch_playlists import fetch_playlists
-
-DISCOGS_USER = "glyphic"
-DISCOGS_TOKEN = "BBBCoVxGwUDXlufRBSfCJFLCqlbHyUkSZOApLZRh"
+BASE_DIR = os.path.dirname(__file__)
+IMG_DIR = os.path.join(BASE_DIR, "static", "images")
+COLLECTION_PATH = os.path.join(BASE_DIR, "collection.json")
 API_BASE = "https://api.discogs.com"
-IMG_DIR = "images"
-COLLECTION_PATH = "collection.json"
+
+load_dotenv()  # read DISCOGS_USER and DISCOGS_TOKEN from .env
+DISCOGS_USER = os.environ["DISCOGS_USER"]
+DISCOGS_TOKEN = os.environ["DISCOGS_TOKEN"]
 
 os.makedirs(IMG_DIR, exist_ok=True)
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "DiscogsCollectorBot/1.0",
+    "Authorization": f"Discogs token={DISCOGS_TOKEN}",
+})
 
-def download_image(url, release_id):
+def download_image(url: str, release_id: int) -> str:
     if not url:
-        return None
-    try:
-        base_filename = f"{release_id}.jpeg"
-        img_path = os.path.join(IMG_DIR, base_filename)
-        if not os.path.exists(img_path):
-            print(f"Downloading image for release {release_id}")
-            headers = {"User-Agent": "DiscogsCollectorBot/1.0 +https://github.com/glyphic"}
-            resp = requests.get(url, stream=True, timeout=10, headers=headers)
-            if resp.status_code == 200:
-                with open(img_path, "wb") as f:
-                    for chunk in resp.iter_content(1024):
+        return ""
+    ext = os.path.splitext(url)[1].lower()
+    if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+        ext = ".jpg"
+    filename = f"{release_id}{ext}"
+    local_path = os.path.join(IMG_DIR, filename)
+    if not os.path.exists(local_path):
+        try:
+            with session.get(url, stream=True, timeout=10) as resp:
+                resp.raise_for_status()
+                with open(local_path, "wb") as f:
+                    for chunk in resp.iter_content(chunk_size=8192):
                         f.write(chunk)
-        return f"/images/{base_filename}"
-    except Exception as e:
-        print(f"Failed to download image for {release_id}: {e}")
-        return None
+        except requests.RequestException:
+            return ""
+    return f"/images/{filename}"
 
-def fetch_release_details(release_id):
-    headers = {
-        "Authorization": f"Discogs token={DISCOGS_TOKEN}",
-        "User-Agent": "DiscogsCollectorBot/1.0 +https://github.com/glyphic"
-    }
-    url = f"{API_BASE}/releases/{release_id}"
+def fetch_release_details(release_id: int) -> Dict:
     try:
-        resp = requests.get(url, headers=headers)
-        if resp.status_code == 200:
-            return resp.json()
-    except Exception as e:
-        print(f"Error fetching release {release_id}: {e}")
-    return {}
+        resp = session.get(f"{API_BASE}/releases/{release_id}", timeout=10)
+        resp.raise_for_status()
+        return resp.json()
+    except requests.RequestException:
+        return {}
 
-def load_existing_ids():
+def load_existing_ids() -> Dict[int, dict]:
     if os.path.exists(COLLECTION_PATH):
         with open(COLLECTION_PATH) as f:
-            existing = json.load(f)
-        return {entry["id"]: entry for entry in existing}
+            data = json.load(f)
+        return {album["id"]: album for album in data}
     return {}
 
-def fetch_collection():
-    existing_albums = load_existing_ids()
-    headers = {
-        "Authorization": f"Discogs token={DISCOGS_TOKEN}",
-        "User-Agent": "DiscogsCollectorBot/1.0 +https://github.com/glyphic"
-    }
-
+def fetch_collection() -> List[dict]:
+    existing = load_existing_ids()
+    albums = []
     page = 1
     per_page = 100
-    new_albums = []
-
     while True:
         url = f"{API_BASE}/users/{DISCOGS_USER}/collection/folders/0/releases?page={page}&per_page={per_page}"
-        print(f"Fetching collection page {page}")
-        resp = requests.get(url, headers=headers)
-        if resp.status_code != 200:
-            print(f"Error fetching collection: {resp.status_code}")
+        try:
+            resp = session.get(url, timeout=10)
+            resp.raise_for_status()
+        except requests.RequestException:
             break
-
         data = resp.json()
         releases = data.get("releases", [])
         if not releases:
             break
-
         for entry in releases:
             basic = entry.get("basic_information", {})
-            release_id = basic.get("id")
-
-            if release_id in existing_albums:
-                continue  # Skip already imported
-
-            detailed = fetch_release_details(release_id)
-            image_url = basic.get("cover_image")
-
+            rid = basic.get("id")
+            if rid in existing:
+                continue
+            detailed = fetch_release_details(rid)
             album = {
-                "id": release_id,
+                "id": rid,
                 "title": basic.get("title"),
                 "artist": ", ".join(a["name"] for a in basic.get("artists", [])),
                 "year": basic.get("year"),
                 "label": basic.get("labels", [{}])[0].get("name", ""),
-                "format": ", ".join(f["name"] for f in basic.get("formats", [])),
+                "format": ", ".join(fmt["name"] for fmt in basic.get("formats", [])),
                 "genre": basic.get("genres", [""])[0],
-                "cover_image": download_image(image_url, release_id),
-                "tracklist": [{"title": t["title"]} for t in detailed.get("tracklist", [])],
-                "date_added": entry.get("date_added")
+                "cover_image": download_image(basic.get("cover_image"), rid),
+                "thumb": basic.get("thumb"),
+                "tracklist": [t["title"] for t in detailed.get("tracklist", [])],
+                "date_added": entry.get("date_added"),
             }
-
-            new_albums.append(album)
-            time.sleep(1)
-
+            albums.append(album)
+            time.sleep(1)  # throttle to respect API rate limits
         if len(releases) < per_page:
             break
         page += 1
-
-    combined = list(existing_albums.values()) + new_albums
+    combined = list(existing.values()) + albums
     return sorted(combined, key=lambda x: x.get("date_added", ""), reverse=True)
 
-def save_collection(albums):
+def save_collection(albums: List[dict]) -> None:
     with open(COLLECTION_PATH, "w") as f:
         json.dump(albums, f, indent=2)
-    print(f"Saved {len(albums)} albums to {COLLECTION_PATH}")
 
 if __name__ == "__main__":
     albums = fetch_collection()
     save_collection(albums)
-    # Call fetch_playlists after updating the collection
-    fetch_playlists()
+    print(f"Saved {len(albums)} albums")
