@@ -1,19 +1,20 @@
-# backend/main.py
-import os, json
+import os
+import json
 from flask import Flask, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
 
+# Paths
 BASE_DIR = os.path.dirname(__file__)
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
 BIN_FILE = os.path.join(BASE_DIR, "bin_store.json")
-IMAGES_DIR = os.path.join(BASE_DIR, "images")  # where the importer saves album art
 
-app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
+# Configure Flask
+app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="/static")
 CORS(app)
 
 def load_collection():
-    """Read the album collection from disk."""
+    """Load and return the album collection."""
     with open(COLLECTION_FILE) as f:
         return json.load(f)
 
@@ -30,16 +31,17 @@ def favicon():
 
 @app.route("/api/collection", methods=["GET"])
 def get_collection():
+    """Return the full album collection as JSON."""
     try:
         return jsonify(load_collection())
     except Exception:
         return jsonify({"error": "Failed to read collection"}), 500
 
-@app.route("/api/bin/ ", methods=["POST"])
+@app.route("/api/bin/<int:album_id>", methods=["POST"])
 def update_bin(album_id: int):
-    """Update the bin assignment for a specific album."""
+    """Update the bin assignment for a given album ID."""
     if not request.is_json:
-        return jsonify({"error": "Payload must be JSON"}), 400
+        return jsonify({"error": "Invalid request"}), 400
     bins = {}
     if os.path.exists(BIN_FILE):
         with open(BIN_FILE) as f:
@@ -51,17 +53,18 @@ def update_bin(album_id: int):
 
 @app.route("/api/bin", methods=["GET"])
 def get_bins():
-    """Return the contents of the bin_store.json file."""
+    """Return all bin assignments."""
     if not os.path.exists(BIN_FILE):
         return jsonify({})
     with open(BIN_FILE) as f:
         return jsonify(json.load(f))
 
 @app.route("/images/<path:filename>")
-def serve_image(filename):
-    """Serve downloaded album art from the images directory."""
+def serve_image(filename: str):
+    """Serve downloaded album art and thumbnails from static/images/."""
+    image_dir = os.path.join(STATIC_DIR, "images")
     try:
-        return send_from_directory(IMAGES_DIR, filename)
+        return send_from_directory(image_dir, filename)
     except FileNotFoundError:
         abort(404)
 
