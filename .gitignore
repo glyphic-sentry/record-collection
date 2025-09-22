@@ -2,3 +2,27 @@
 backend/venv/
 venv/
 .venv/
+# .gitignore
+
+# Secret keys and environment files
+.env
+key
+key.pub
+
+# Local caches and user-specific files
+*.pem
+*.key
+
+# Generated JSON data
+backend/bin_store.json
+backend/collection.json
+
+# Downloaded/cached images
+backend/static/images/
+
+# Node and Python package directories
+frontend/node_modules/
+backend/venv/
+
+# OS-specific files
+*.log
