@@ -1235,3 +1235,4 @@ Traceback (most recent call last):
   File "/home/glyphic/record-collection/backend/collection_importer.py", line 10, in <module>
     from fetch_playlists import fetch_playlists
 ModuleNotFoundError: No module named 'fetch_playlists'
+Saved 1032 albums
