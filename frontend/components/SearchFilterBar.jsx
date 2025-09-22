@@ -1,40 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 export default function SearchFilterBar({ onFilter }) {
-  const [term, setTerm] = useState("");
-  const [year, setYear] = useState("");
-  const [genre, setGenre] = useState("");
+  const [term, setTerm] = useState('');
+  const [year, setYear] = useState('');
+  const [genre, setGenre] = useState('');
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      onFilter({ term, year, genre });
+    const timer = setTimeout(() => {
+      onFilter({ term: term.trim(), year: year.trim(), genre: genre.trim() });
     }, 300);
-    return () => clearTimeout(delay);
-  }, [term, year, genre]);
+    return () => clearTimeout(timer);
+  }, [term, year, genre, onFilter]);
 
   return (
-    <div className="flex gap-2 mb-4 items-center flex-wrap">
-      <input
-        type="text"
-        placeholder="Search title/artist"
-        className="p-1 text-black"
-        value={term}
-        onChange={(e) => setTerm(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Year"
-        className="p-1 text-black w-24"
-        value={year}
-        onChange={(e) => setYear(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Genre"
-        className="p-1 text-black"
-        value={genre}
-        onChange={(e) => setGenre(e.target.value)}
-      />
+    <div className="flex gap-2">
+      <input className="input" placeholder="Search…" value={term} onChange={(e) => setTerm(e.target.value)} />
+      <input className="input" type="number" placeholder="Year" value={year} onChange={(e) => setYear(e.target.value)} />
+      <input className="input" placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} />
     </div>
   );
 }
