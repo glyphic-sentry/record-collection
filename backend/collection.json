@@ -3160,7 +3160,7 @@
     "label": "Void Assault",
     "format": "Vinyl",
     "genre": "Rock",
-    "cover_image": null,
+    "cover_image": "",
     "thumb": "",
     "tracklist": [
       "Kool Thang",
@@ -14353,7 +14353,7 @@
     "label": "Asbestos Records",
     "format": "Vinyl",
     "genre": "Electronic",
-    "cover_image": null,
+    "cover_image": "",
     "thumb": "",
     "tracklist": [
       "Drugs For Change",
@@ -23417,7 +23417,7 @@
     "label": "Pine Street Collection",
     "format": "Vinyl",
     "genre": "Rock",
-    "cover_image": null,
+    "cover_image": "",
     "thumb": "",
     "tracklist": [
       "February, 1878",
@@ -26530,7 +26530,7 @@
     "label": "Skin Graft Records",
     "format": "Vinyl",
     "genre": "Rock",
-    "cover_image": null,
+    "cover_image": "",
     "thumb": "",
     "tracklist": [
       "Teaching To Suffer",
