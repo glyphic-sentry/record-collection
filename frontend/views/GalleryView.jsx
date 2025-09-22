@@ -12,7 +12,7 @@ export default function GalleryView() {
   const [slidesToShow, setSlidesToShow] = useState(4);
   const sliderRef = useRef(null);
 
-  // Fetch album collection on mount
+  // Fetch the collection on mount
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -20,7 +20,7 @@ export default function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Dynamically adjust the number of slides based on window width
+  // Adjust the number of slides based on window width
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -32,12 +32,12 @@ export default function GalleryView() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Sort albums
+  // Sort albums by the selected option
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       return a.title.localeCompare(b.title);
     }
-    // default to most recent first
+    // Default: most recent first
     return new Date(b.date_added || 0) - new Date(a.date_added || 0);
   });
 
@@ -57,7 +57,7 @@ export default function GalleryView() {
     return matchTerm && matchGenre;
   });
 
-  // Slider settings for react-slick
+  // Slider configuration
   const settings = {
     dots: false,
     infinite: true,
@@ -75,7 +75,7 @@ export default function GalleryView() {
         isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-      {/* Controls for search, genre, sort, and dark mode toggle */}
+      {/* Controls for search, genre, sorting, and dark mode */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           className="border rounded px-2 py-1 text-black w-full sm:w-1/3"
@@ -120,9 +120,9 @@ export default function GalleryView() {
               className="cursor-pointer flex flex-col items-center justify-center p-2"
             >
               <div className="relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg">
-                {/* Use thumbnail first, then cover image as fallback */}
+                {/* Prefer the full-sized cover image; fallback to the thumbnail if needed */}
                 <img
-                  src={album.thumb || album.cover_image}
+                  src={album.cover_image || album.thumb}
                   alt={album.title}
                   className="w-full h-full object-cover"
                 />
