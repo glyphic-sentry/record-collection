@@ -78,7 +78,10 @@ def fetch_collection() -> List[dict]:
     per_page = 100
 
     while True:
-        url = f"{API_BASE}/users/{DISCOGS_USER}/collection/folders/0/releases?page={page}&per_page={per_page}"
+        url = (
+            f"{API_BASE}/users/{DISCOGS_USER}/collection/folders/0/releases?"
+            f"page={page}&per_page={per_page}"
+        )
         resp = session.get(url, timeout=10)
         if resp.status_code != 200:
             break
