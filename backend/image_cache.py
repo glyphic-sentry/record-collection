@@ -1,8 +1,10 @@
-# backend/image_cache.py
-import os, hashlib, requests
+import os
+import hashlib
+import requests
 from typing import Optional
 
-CACHE_DIR = os.path.join(os.path.dirname(__file__), "static", "images")
+# Use backend/images instead of backend/static/images for cached images
+CACHE_DIR = os.path.join(os.path.dirname(__file__), "images")
 FALLBACK_IMAGE = "/fallback.jpg"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
