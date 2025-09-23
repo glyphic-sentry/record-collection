@@ -1236,3 +1236,4 @@ Traceback (most recent call last):
     from fetch_playlists import fetch_playlists
 ModuleNotFoundError: No module named 'fetch_playlists'
 Saved 1032 albums
+Saved 1033 albums
