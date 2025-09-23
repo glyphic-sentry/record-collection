@@ -19,7 +19,7 @@ backend/collection.json
 
 # Downloaded/cached images
 backend/static/images/
-
+backend/images/
 # Node and Python package directories
 frontend/node_modules/
 backend/venv/
