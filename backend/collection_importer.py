@@ -1,4 +1,3 @@
-# backend/collection_importer.py
 import os
 import json
 import time
@@ -7,17 +6,21 @@ from typing import Dict, List
 from PIL import Image
 from dotenv import load_dotenv
 
+# Directories and files
 BASE_DIR = os.path.dirname(__file__)
-STATIC_IMAGES_DIR = os.path.join(BASE_DIR, "static", "images")
+IMAGES_DIR = os.path.join(BASE_DIR, "images")  # store images here instead of backend/static/images
 COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
 API_BASE = "https://api.discogs.com"
 
+# Load credentials from .env
 load_dotenv()
 DISCOGS_USER = os.environ["DISCOGS_USER"]
 DISCOGS_TOKEN = os.environ["DISCOGS_TOKEN"]
 
-os.makedirs(STATIC_IMAGES_DIR, exist_ok=True)
+# Ensure images directory exists
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
+# Reuse HTTP connections
 session = requests.Session()
 session.headers.update({
     "User-Agent": "DiscogsCollectorBot/1.0",
@@ -25,15 +28,14 @@ session.headers.update({
 })
 
 def download_image(url: str, basename: str) -> str:
-    """Download an image from URL, save as basename + ext, return filename."""
+    """Download an image and save it under IMAGES_DIR using basename + ext."""
     if not url:
         return ""
     ext = os.path.splitext(url)[1].lower()
     if ext not in (".jpg", ".jpeg", ".png", ".webp"):
         ext = ".jpg"
     filename = f"{basename}{ext}"
-    local_path = os.path.join(STATIC_IMAGES_DIR, filename)
-    # Only download if file doesn't exist locally
+    local_path = os.path.join(IMAGES_DIR, filename)
     if not os.path.exists(local_path):
         try:
             resp = session.get(url, stream=True, timeout=10)
@@ -46,12 +48,12 @@ def download_image(url: str, basename: str) -> str:
     return filename
 
 def create_thumbnail(filename: str, size=(256, 256)) -> str:
-    """Create a thumbnail for the given image and return its filename."""
+    """Create a thumbnail for the image and return its filename."""
     if not filename:
         return ""
-    original_path = os.path.join(STATIC_IMAGES_DIR, filename)
+    original_path = os.path.join(IMAGES_DIR, filename)
     thumb_name = f"thumb_{filename}"
-    thumb_path = os.path.join(STATIC_IMAGES_DIR, thumb_name)
+    thumb_path = os.path.join(IMAGES_DIR, thumb_name)
     if not os.path.exists(thumb_path) and os.path.exists(original_path):
         with Image.open(original_path) as img:
             img.thumbnail(size)
@@ -59,7 +61,7 @@ def create_thumbnail(filename: str, size=(256, 256)) -> str:
     return thumb_name
 
 def fetch_release_details(release_id: int) -> Dict:
-    """Fetch release details from the Discogs API."""
+    """Fetch full release details from Discogs."""
     try:
         resp = session.get(f"{API_BASE}/releases/{release_id}", timeout=10)
         resp.raise_for_status()
@@ -68,7 +70,7 @@ def fetch_release_details(release_id: int) -> Dict:
         return {}
 
 def load_existing() -> Dict[int, dict]:
-    """Load existing albums keyed by ID."""
+    """Load existing albums keyed by their ID."""
     if os.path.exists(COLLECTION_FILE):
         with open(COLLECTION_FILE) as f:
             albums = json.load(f)
@@ -76,16 +78,16 @@ def load_existing() -> Dict[int, dict]:
     return {}
 
 def local_file_exists(path: str) -> bool:
-    """Check if a local image path (e.g. '/images/123.jpg') actually exists on disk."""
+    """Check if a local image path exists in IMAGES_DIR."""
     if not path or not path.startswith("/images/"):
         return False
-    fname = path.split("/")[-1]
-    return os.path.exists(os.path.join(STATIC_IMAGES_DIR, fname))
+    filename = path.split("/")[-1]
+    return os.path.exists(os.path.join(IMAGES_DIR, filename))
 
 def fetch_collection() -> List[dict]:
     """
-    Fetch the user's Discogs collection and ensure cover/back images exist locally.
-    If any image file is missing, re-download images and update the record.
+    Fetch the user's collection from Discogs and ensure images exist locally.
+    Downloads the first two images for each release (front and back).
     """
     existing = load_existing()
     albums: List[dict] = []
@@ -112,31 +114,31 @@ def fetch_collection() -> List[dict]:
             if not release_id:
                 continue
 
-            # Determine whether existing images actually exist on disk
+            # If album already exists, check if local images exist
             if release_id in existing:
                 rec = existing[release_id]
                 cover_ok = local_file_exists(rec.get("cover_image", ""))
                 back_ok = local_file_exists(rec.get("back_image", ""))
-                # Skip only if both front and back images exist
+                # Skip only if both images exist
                 if cover_ok and back_ok:
                     continue
                 else:
-                    # Remove outdated record so we can refresh it
+                    # Remove outdated entry to refresh
                     existing.pop(release_id, None)
 
-            # Pull release details (for images and tracklist)
+            # Fetch release details to get images and tracklist
             detailed = fetch_release_details(release_id)
             images = detailed.get("images", [])
 
-            # Try to get the first two image URLs
-            # If images list is empty, fall back to basic cover_image
+            # Extract the first two image URLs (front and back)
             image_urls: List[str] = []
             if images:
                 for img in images[:2]:
-                    url = img.get("uri") or img.get("resource_url") or ""
-                    if url:
-                        image_urls.append(url)
+                    url_part = img.get("uri") or img.get("resource_url")
+                    if url_part:
+                        image_urls.append(url_part)
             else:
+                # Fallback to basic cover image if detailed images missing
                 ci = basic.get("cover_image")
                 if ci:
                     image_urls.append(ci)
@@ -158,7 +160,7 @@ def fetch_collection() -> List[dict]:
                 back_path = f"/images/{fname2}" if fname2 else ""
                 back_thumb = f"/images/{thumb2}" if thumb2 else ""
 
-            # Build album entry
+            # Build album object
             album = {
                 "id": release_id,
                 "title": basic.get("title"),
@@ -175,18 +177,20 @@ def fetch_collection() -> List[dict]:
                 "date_added": entry.get("date_added"),
             }
             albums.append(album)
-            # Throttle to respect API rate limits
+            # Throttle requests to avoid API rate limits
             time.sleep(1)
 
         if len(releases) < per_page:
             break
         page += 1
 
-    # Merge existing albums that were not refreshed with newly fetched ones
+    # Merge existing (unchanged) with new/updated albums
     combined = list(existing.values()) + albums
+    # Sort by date added, most recent first
     return sorted(combined, key=lambda x: x.get("date_added", ""), reverse=True)
 
 def save_collection(albums: List[dict]) -> None:
+    """Save the updated album collection to disk."""
     with open(COLLECTION_FILE, "w") as f:
         json.dump(albums, f, indent=2)
 
