@@ -14,7 +14,7 @@ function GalleryView() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const sliderRef = useRef(null);
 
-  // Fetch the collection on mount
+  // Load album collection
   useEffect(() => {
     fetch("/api/collection")
       .then((res) => res.json())
@@ -22,7 +22,7 @@ function GalleryView() {
       .catch((err) => console.error("Error fetching collection:", err));
   }, []);
 
-  // Dynamically adjust the number of slides based on window width
+  // Adjust number of slides based on screen width
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -34,7 +34,7 @@ function GalleryView() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Sort albums by the selected option
+  // Sort albums by title or date
   const sorted = [...albums].sort((a, b) => {
     if (sort === "alphabetical") {
       return a.title.localeCompare(b.title);
@@ -68,7 +68,7 @@ function GalleryView() {
     swipeToSlide: true,
   };
 
-  // Modal control functions
+  // Modal handlers
   const openModal = (album) => setSelectedAlbum(album);
   const closeModal = () => setSelectedAlbum(null);
 
@@ -78,7 +78,7 @@ function GalleryView() {
         isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-      {/* Controls for search, genre, sorting, and dark mode */}
+      {/* Filter controls */}
       <div className="flex flex-wrap gap-2 justify-between items-center px-4 py-2">
         <input
           className="border rounded px-2 py-1 text-black w-full sm:w-1/3"
@@ -114,7 +114,7 @@ function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel container: centre vertically and leave arrows visible */}
+      {/* Carousel */}
       <div className="flex-grow flex justify-center items-center px-4 pb-4">
         <div className="w-full max-w-screen-lg overflow-visible">
           <Slider ref={sliderRef} {...settings}>
@@ -143,7 +143,7 @@ function GalleryView() {
         </div>
       </div>
 
-      {/* Modal dialog for album details */}
+      {/* Modal for album details */}
       {selectedAlbum && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
@@ -161,7 +161,7 @@ function GalleryView() {
             >
               ×
             </button>
-            {/* Show back image if available, otherwise front */}
+            {/* Show back image if present, otherwise fallback to cover */}
             <img
               src={
                 selectedAlbum.back_image ||
@@ -175,34 +175,28 @@ function GalleryView() {
             <h2 className="text-xl font-semibold">{selectedAlbum.title}</h2>
             <p className="text-lg">{selectedAlbum.artist}</p>
             <p className="text-sm text-gray-400">
-              {[selectedAlbum.year, selectedAlbum.genre]
-                .filter(Boolean)
-                .join(" • ")}
+              {[selectedAlbum.year, selectedAlbum.genre].filter(Boolean).join(" • ")}
             </p>
-            {Array.isArray(selectedAlbum.tracklist) &&
-              selectedAlbum.tracklist.length > 0 && (
-                <>
-                  <h3 className="mt-4 font-bold">Tracklist</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {selectedAlbum.tracklist.map((track, idx) => (
-                      <li key={idx}>
-                        {typeof track === "string" ? track : track.title}
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+            {Array.isArray(selectedAlbum.tracklist) && selectedAlbum.tracklist.length > 0 && (
+              <>
+                <h3 className="mt-4 font-bold">Tracklist</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  {selectedAlbum.tracklist.map((track, idx) => (
+                    <li key={idx}>
+                      {typeof track === "string" ? track : track.title}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
             {selectedAlbum.date_added && (
               <p className="mt-4 text-xs text-gray-500">
                 Added:{" "}
-                {new Date(selectedAlbum.date_added).toLocaleDateString(
-                  undefined,
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
+                {new Date(selectedAlbum.date_added).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
             )}
           </div>
