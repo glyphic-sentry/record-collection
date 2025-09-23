@@ -3,18 +3,16 @@ import json
 from flask import Flask, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
 
-# Paths
 BASE_DIR = os.path.dirname(__file__)
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+IMAGES_DIR = os.path.join(BASE_DIR, "images")  # now storing images here
 COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
 BIN_FILE = os.path.join(BASE_DIR, "bin_store.json")
 
-# Configure Flask
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="/static")
 CORS(app)
 
 def load_collection():
-    """Load and return the album collection."""
     with open(COLLECTION_FILE) as f:
         return json.load(f)
 
@@ -31,7 +29,6 @@ def favicon():
 
 @app.route("/api/collection", methods=["GET"])
 def get_collection():
-    """Return the full album collection as JSON."""
     try:
         return jsonify(load_collection())
     except Exception:
@@ -39,7 +36,6 @@ def get_collection():
 
 @app.route("/api/bin/<int:album_id>", methods=["POST"])
 def update_bin(album_id: int):
-    """Update the bin assignment for a given album ID."""
     if not request.is_json:
         return jsonify({"error": "Invalid request"}), 400
     bins = {}
@@ -53,7 +49,6 @@ def update_bin(album_id: int):
 
 @app.route("/api/bin", methods=["GET"])
 def get_bins():
-    """Return all bin assignments."""
     if not os.path.exists(BIN_FILE):
         return jsonify({})
     with open(BIN_FILE) as f:
@@ -61,10 +56,9 @@ def get_bins():
 
 @app.route("/images/<path:filename>")
 def serve_image(filename: str):
-    """Serve downloaded album art and thumbnails from static/images/."""
-    image_dir = os.path.join(STATIC_DIR, "images")
+    """Serve album art and thumbnails from backend/images."""
     try:
-        return send_from_directory(image_dir, filename)
+        return send_from_directory(IMAGES_DIR, filename)
     except FileNotFoundError:
         abort(404)
 
