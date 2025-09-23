@@ -132,8 +132,8 @@ export default function GalleryView() {
                 className="p-2 flex flex-col items-center cursor-pointer"
                 onClick={() => openModal(album)}
               >
-                {/* Limit the height to 50% of viewport and preserve aspect ratio */}
-                <div className="w-full max-h-[50vh]">
+                {/* Give the slide a fixed height so the image can display */}
+                <div className="w-full h-48 sm:h-64 md:h-[50vh]">
                   <img
                     src={album.cover_image || album.thumb}
                     alt={album.title}
