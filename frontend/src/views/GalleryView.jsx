@@ -10,7 +10,7 @@ export default function GalleryView() {
   const [genre, setGenre] = useState("");
   const [sort, setSort] = useState("recent");
   const [isDark, setIsDark] = useState(true);
-  const [slidesToShow, setSlidesToShow] = useState(3);
+  const [slidesToShow, setSlidesToShow] = useState(4);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const sliderRef = useRef(null);
 
@@ -26,12 +26,7 @@ export default function GalleryView() {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      // Show fewer slides on narrow screens
-      const slides = width < 640
-        ? 1
-        : width < 1024
-        ? 2
-        : 3;
+      const slides = Math.max(1, Math.min(Math.floor(width / 250), 6));
       setSlidesToShow(slides);
     };
     handleResize();
@@ -44,7 +39,6 @@ export default function GalleryView() {
     if (sort === "alphabetical") {
       return a.title.localeCompare(b.title);
     }
-    // Default: most recent first
     return new Date(b.date_added || 0) - new Date(a.date_added || 0);
   });
 
@@ -65,15 +59,13 @@ export default function GalleryView() {
   // Slider configuration
   const settings = {
     dots: false,
-    infinite: filtered.length > slidesToShow,
+    infinite: true,
     speed: 500,
     slidesToShow,
     slidesToScroll: 1,
     arrows: true,
     swipe: true,
-    adaptiveHeight: true,
-    centerMode: true,
-    centerPadding: "0px",
+    swipeToSlide: true,
   };
 
   // Modal control functions
@@ -122,22 +114,21 @@ export default function GalleryView() {
         </button>
       </div>
 
-      {/* Carousel container: centers the slider and prevents arrows from being cut off */}
+      {/* Carousel container: centre vertically and leave arrows visible */}
       <div className="flex-grow flex justify-center items-center px-4 pb-4">
         <div className="w-full max-w-screen-lg overflow-visible">
           <Slider ref={sliderRef} {...settings}>
             {filtered.map((album) => (
               <div
                 key={album.id}
-                className="p-2 flex flex-col items-center cursor-pointer"
+                className="cursor-pointer flex flex-col items-center justify-center p-2"
                 onClick={() => openModal(album)}
               >
-                {/* Give the slide a fixed height so the image can display */}
-                <div className="w-full h-48 sm:h-64 md:h-[50vh]">
+                <div className="relative w-full h-72 md:h-60 sm:h-48 rounded-xl overflow-hidden shadow-lg">
                   <img
                     src={album.cover_image || album.thumb}
                     alt={album.title}
-                    className="w-full h-full object-contain rounded-xl shadow-lg"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <p className="text-center mt-2 text-base font-medium w-full truncate">
@@ -162,7 +153,7 @@ export default function GalleryView() {
             className={`relative max-w-xl w-full p-4 rounded-lg shadow-lg ${
               isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
             }`}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={closeModal}
@@ -170,13 +161,11 @@ export default function GalleryView() {
             >
               ×
             </button>
-            {/* Full-size cover image */}
             <img
               src={selectedAlbum.cover_image || selectedAlbum.thumb}
               alt={selectedAlbum.title}
               className="w-full h-auto max-h-[60vh] object-contain rounded-md mb-4"
             />
-            {/* Album information */}
             <h2 className="text-xl font-semibold">{selectedAlbum.title}</h2>
             <p className="text-lg">{selectedAlbum.artist}</p>
             <p className="text-sm text-gray-400">
@@ -184,28 +173,30 @@ export default function GalleryView() {
                 .filter(Boolean)
                 .join(" • ")}
             </p>
-            {/* Tracklist */}
-            {Array.isArray(selectedAlbum.tracklist) && selectedAlbum.tracklist.length > 0 && (
-              <>
-                <h3 className="mt-4 font-bold">Tracklist</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {selectedAlbum.tracklist.map((track, idx) => (
-                    <li key={idx}>
-                      {typeof track === "string" ? track : track.title}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-            {/* Date added */}
+            {Array.isArray(selectedAlbum.tracklist) &&
+              selectedAlbum.tracklist.length > 0 && (
+                <>
+                  <h3 className="mt-4 font-bold">Tracklist</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {selectedAlbum.tracklist.map((track, idx) => (
+                      <li key={idx}>
+                        {typeof track === "string" ? track : track.title}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             {selectedAlbum.date_added && (
               <p className="mt-4 text-xs text-gray-500">
                 Added:{" "}
-                {new Date(selectedAlbum.date_added).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {new Date(selectedAlbum.date_added).toLocaleDateString(
+                  undefined,
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
               </p>
             )}
           </div>
