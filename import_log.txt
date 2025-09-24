@@ -1237,3 +1237,4 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'fetch_playlists'
 Saved 1032 albums
 Saved 1033 albums
+Saved 1033 albums
