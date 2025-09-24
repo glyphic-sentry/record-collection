@@ -1,4 +1,3 @@
-# backend/collection_importer.py
 import os
 import json
 import time
@@ -59,6 +58,7 @@ def create_thumb(filename: str, size=(256, 256)) -> str:
     return thumb_name
 
 def load_existing() -> Dict[int, dict]:
+    """Load existing collection from JSON, returning a dict indexed by album ID."""
     if os.path.exists(COLLECTION_FILE):
         with open(COLLECTION_FILE) as f:
             arr = json.load(f)
@@ -72,7 +72,50 @@ def local_exists(path: str) -> bool:
     file_name = path.split("/")[-1]
     return os.path.exists(os.path.join(IMAGES_DIR, file_name))
 
+def normalize_image_filenames(albums_by_id: Dict[int, dict]) -> None:
+    """Normalize image filenames by converting old *_1.jpg/_2.jpg patterns to new <id>.jpg naming (including thumbnails)."""
+    for album_id, album in albums_by_id.items():
+        for field in ["cover_image", "thumb", "back_image", "back_thumb"]:
+            path = album.get(field, "")
+            if not path or not path.startswith("/images/"):
+                continue
+            file_name = path.split("/")[-1]
+            new_file_name = None
+            # Determine new name based on pattern
+            if file_name.startswith("thumb_"):
+                # Thumbnail file
+                if file_name.endswith("_1.jpg"):
+                    base = file_name[len("thumb_"):-len("_1.jpg")]
+                    new_file_name = f"thumb_{base}.jpg"
+                elif file_name.endswith("_2.jpg"):
+                    base = file_name[len("thumb_"):-len("_2.jpg")]
+                    new_file_name = f"thumb_{base}_back.jpg"
+            else:
+                # Full-size image file
+                if file_name.endswith("_1.jpg"):
+                    base = file_name[:-len("_1.jpg")]
+                    new_file_name = f"{base}.jpg"
+                elif file_name.endswith("_2.jpg"):
+                    base = file_name[:-len("_2.jpg")]
+                    new_file_name = f"{base}_back.jpg"
+            if new_file_name:
+                orig_path = os.path.join(IMAGES_DIR, file_name)
+                new_path = os.path.join(IMAGES_DIR, new_file_name)
+                # Rename the file on disk if the original exists
+                if os.path.exists(orig_path):
+                    if os.path.exists(new_path):
+                        # If the target name already exists, remove the old file
+                        try:
+                            os.remove(orig_path)
+                        except OSError:
+                            pass
+                    else:
+                        os.rename(orig_path, new_path)
+                # Update the album record to use the new filename
+                album[field] = f"/images/{new_file_name}"
+
 def fetch_release_details(release_id: int) -> Dict:
+    """Fetch detailed release info (including tracklist and images) from the Discogs API."""
     try:
         res = session.get(f"{API_BASE}/releases/{release_id}", timeout=15)
         res.raise_for_status()
@@ -82,6 +125,9 @@ def fetch_release_details(release_id: int) -> Dict:
 
 def fetch_collection() -> List[dict]:
     existing = load_existing()
+    # Normalize existing image filenames for album art
+    if existing:
+        normalize_image_filenames(existing)
     albums: List[dict] = []
     page, per_page = 1, 100
 
@@ -114,9 +160,13 @@ def fetch_collection() -> List[dict]:
             # Fetch detailed info for tracklist and images
             detailed = fetch_release_details(release_id)
             images = detailed.get("images", [])
-            urls = [img.get("uri") or img.get("uri_https") or img.get("resource_url") for img in images if img.get("uri") or img.get("uri_https") or img.get("resource_url")]
+            urls = [
+                img.get("uri") or img.get("uri_https") or img.get("resource_url")
+                for img in images 
+                if img.get("uri") or img.get("uri_https") or img.get("resource_url")
+            ]
 
-            # Primary cover (no suffix)
+            # Primary cover (first image)
             cover_name = ""
             thumb_name = ""
             if urls:
@@ -125,7 +175,7 @@ def fetch_collection() -> List[dict]:
                 cover_name = f"/images/{fname}" if fname else ""
                 thumb_name = f"/images/{thumb}" if thumb else ""
 
-            # Back cover (suffix "_back") if available
+            # Back cover (second image), if available
             back_name = ""
             back_thumb_name = ""
             if len(urls) > 1:
@@ -156,9 +206,11 @@ def fetch_collection() -> List[dict]:
             break
         page += 1
 
+    # Combine updated existing albums with newly fetched albums, sorted by date_added
     return sorted(list(existing.values()) + albums, key=lambda x: x.get("date_added", ""), reverse=True)
 
 def save_collection(albums: List[dict]) -> None:
+    """Save the collection of albums to the collection JSON file."""
     with open(COLLECTION_FILE, "w") as f:
         json.dump(albums, f, indent=2)
 
