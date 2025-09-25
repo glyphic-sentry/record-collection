@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import GalleryView from "./GalleryView";
-import ListView from "./ListView";
+import GalleryView from "./GalleryView.jsx";
+import ListView from "./ListView.jsx";
 import collection from "../collection.json";
 
 export default function App() {
