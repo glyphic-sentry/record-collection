@@ -1,125 +1,72 @@
-// frontend/src/views/ListView.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 
-export default function ListView() {
-  const [albums, setAlbums] = useState([]);
-  const [search, setSearch] = useState("");
-  const [genre, setGenre] = useState("");
-  const [sort, setSort] = useState("recent");
+function buildImageCandidates(record, dir = "/images") {
+  const ids = [];
+  if (record?.imageId != null) ids.push(String(record.imageId));
+  if (record?.id != null) ids.push(String(record.id));
 
-  // Fetch collection on mount
-  useEffect(() => {
-    fetch("/api/collection")
-      .then((res) => res.json())
-      .then((data) => setAlbums(data))
-      .catch((err) => console.error("Error fetching collection:", err));
-  }, []);
+  const bases = new Set();
+  for (const id of ids) {
+    if (!id) continue;
+    const core = [id, `${id}_back`];
+    const thumbs = core.map((c) => `thumb_${c}`);
+    [...core, ...thumbs].forEach((b) => bases.add(b));
+  }
 
-  // Filter by search and genre first
-  const filtered = useMemo(() => {
-    return albums.filter((album) => {
-      const q = search.trim().toLowerCase();
-      const matchTerm =
-        !q ||
-        album.title?.toLowerCase().includes(q) ||
-        album.artist?.toLowerCase().includes(q) ||
-        album.tracklist?.some((t) =>
-          (typeof t === "string" ? t : t.title).toLowerCase().includes(q)
-        );
-      const matchGenre = !genre || album.genre === genre;
-      return matchTerm && matchGenre;
-    });
-  }, [albums, search, genre]);
+  const exts = [".jpeg", ".jpg", ".png", ".webp"];
+  const out = [];
+  for (const b of bases) {
+    for (const e of exts) out.push(`${dir}/${b}${e}`);
+  }
+  out.sort((a, b) => a.includes("/thumb_") - b.includes("/thumb_"));
+  return out;
+}
 
-  // Then sort a COPY of the filtered list
-  const sorted = useMemo(() => {
-    const list = [...filtered]; // <- copy, don’t mutate
-    if (sort === "alphabetical") {
-      return list.sort((a, b) => a.artist.localeCompare(b.artist));
-    } else {
-      // Default: sort by date added descending
-      return list.sort(
-        (a, b) =>
-          new Date(b.date_added || 0) - new Date(a.date_added || 0)
-      );
-    }
-  }, [filtered, sort]);
+function SmartImg({ record, alt, className, dir = "/images", ...imgProps }) {
+  const candidates = useMemo(() => buildImageCandidates(record, dir), [record, dir]);
+  const [idx, setIdx] = useState(0);
+  const src = candidates[idx] ?? "";
 
+  const onError = useCallback(
+    (ev) => {
+      if (idx < candidates.length - 1) setIdx((i) => i + 1);
+      if (imgProps.onError) imgProps.onError(ev);
+    },
+    [idx, candidates.length, imgProps]
+  );
+
+  return <img src={src} alt={alt} className={className} onError={onError} {...imgProps} />;
+}
+
+export default function ListView({ items = [] }) {
   return (
-    <div className="p-4">
-      {/* Controls */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <input
-          className="border rounded px-2 py-1 text-black w-full sm:w-1/3"
-          placeholder="Search albums…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="border rounded px-2 py-1 text-black"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
+    <div style={{ padding: 16 }}>
+      {items.map((r) => (
+        <div
+          key={r.id ?? r.imageId}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "64px 1fr",
+            gap: 12,
+            alignItems: "center",
+            padding: "8px 0",
+            borderBottom: "1px solid #eee",
+          }}
         >
-          <option value="">All genres</option>
-          {[...new Set(albums.map((a) => a.genre).filter(Boolean))].map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
-          ))}
-        </select>
-        <select
-          className="border rounded px-2 py-1 text-black"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="recent">Sort by date</option>
-          <option value="alphabetical">Sort by artist</option>
-        </select>
-      </div>
-
-      {/* Table */}
-      <table className="w-full border-collapse">
-      <thead>
-        <tr className="bg-gray-700 text-white">
-          <th className="p-2">Cover</th>
-          <th className="p-2">Title</th>
-          <th
-            className="p-2 cursor-pointer"
-            onClick={() =>
-              setSort((prev) =>
-                prev === "alphabetical" ? "recent" : "alphabetical"
-              )
-            }
-          >
-            Artist{sort === "alphabetical" ? " ▲" : ""}
-          </th>
-          <th className="p-2">Year</th>
-          <th className="p-2">Genre</th>
-          <th className="p-2">Label</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sorted.map((album) => (
-          <tr
-            key={album.id}
-            className="odd:bg-gray-800 even:bg-gray-700 text-white"
-          >
-            <td className="p-2">
-              <img
-                src={album.thumb || album.cover_image}
-                alt={album.title}
-                className="w-12 h-12 object-cover rounded"
-              />
-            </td>
-            <td className="p-2">{album.title}</td>
-            <td className="p-2">{album.artist}</td>
-            <td className="p-2">{album.year}</td>
-            <td className="p-2">{album.genre}</td>
-            <td className="p-2">{album.label}</td>
-          </tr>
-        ))}
-      </tbody>
-      </table>
+          <SmartImg
+            record={r}
+            alt={`${r.title ?? "Record"} cover`}
+            className="list-cover"
+            style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 6 }}
+          />
+          <div>
+            <div style={{ fontWeight: 600 }}>{r.title ?? r.name ?? "(untitled)"}</div>
+            <div style={{ opacity: 0.7, fontSize: 12 }}>
+              {r.artist ?? r.artists?.[0]?.name ?? ""} {r.year ? `• ${r.year}` : ""}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
