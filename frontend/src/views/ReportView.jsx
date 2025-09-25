@@ -1,27 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-  Brush,
+  BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, Tooltip, CartesianGrid,
+  ResponsiveContainer, Legend, Brush,
 } from "recharts";
-
-/*
- * ReportView renders a set of charts summarising the user's record
- * collection.  The original page included a bar chart labelled
- * "By Label" that duplicated the genre chart but grouped by label.  To
- * declutter the report, this graph has been removed.  To make the
- * remaining charts more interactive, a `Brush` component has been
- * added to each chart.  The brush allows the user to zoom into a
- * subset of the data and scroll through it by dragging the handles.
- */
 
 export default function ReportView() {
   const [albums, setAlbums] = useState([]);
@@ -30,10 +12,37 @@ export default function ReportView() {
   const [labelFilter, setLabelFilter] = useState("");
 
   useEffect(() => {
+    let ignore = false;
     fetch("/api/collection")
-      .then((res) => res.json())
-      .then((data) => setAlbums(data))
-      .catch((err) => console.error("Error fetching collection:", err));
+      .then(res => {
+        if (!res.ok) { 
+          // If HTTP error, throw to trigger catch
+          throw new Error(`HTTP ${res.status} ${res.statusText}`);  /* ⚠️ */
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (ignore) return;
+        // Normalize data to an array
+        let records = [];
+        if (Array.isArray(data)) {
+          records = data;
+        } else if (data && typeof data === "object") {
+          if (Array.isArray(data.records)) records = data.records;
+          else if (Array.isArray(data.collection)) records = data.collection;
+          else if (Array.isArray(data.items)) records = data.items;
+        }
+        if (!Array.isArray(records)) {
+          console.warn("Unexpected API payload in ReportView:", data);  /* ⚠️ */
+          records = [];
+        }
+        setAlbums(records);
+      })
+      .catch(err => {
+        console.error("Error fetching collection in ReportView:", err);  /* ⚠️ */
+        setAlbums([]);  // Set empty array on error to avoid crash        /* ⚠️ */
+      });
+    return () => { ignore = true; };
   }, []);
 
   // Apply genre and label filters to the album list
@@ -48,7 +57,6 @@ export default function ReportView() {
     acc[album.genre] = (acc[album.genre] || 0) + 1;
     return acc;
   }, {});
-
   const decadeCounts = filteredAlbums.reduce((acc, album) => {
     const decade = album.year ? `${Math.floor(album.year / 10) * 10}s` : "Unknown";
     acc[decade] = (acc[decade] || 0) + 1;
@@ -75,6 +83,7 @@ export default function ReportView() {
 
   return (
     <div className={`min-h-screen p-4 ${isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
+      {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         <select
           className="border rounded px-2 py-1 text-black"
@@ -118,7 +127,6 @@ export default function ReportView() {
               <Tooltip />
               <CartesianGrid strokeDasharray="3 3" />
               <Bar dataKey="value" fill="#8884d8" />
-              {/* Brush provides zoom and scroll for the bar chart */}
               <Brush dataKey="name" height={30} stroke="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
