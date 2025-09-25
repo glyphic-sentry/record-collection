@@ -5,7 +5,7 @@ from typing import Optional
 
 # Use backend/images instead of backend/static/images for cached images
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "images")
-FALLBACK_IMAGE = "/fallback.jpg"
+FALLBACK_IMAGE = "static/fallback.jpg"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 session = requests.Session()
