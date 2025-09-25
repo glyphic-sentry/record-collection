@@ -1,33 +1,42 @@
-import React, { useState, useEffect } from "react";
+// frontend/src/App.jsx
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import GalleryView from "./GalleryView.jsx";
-import ListView from "./ListView.jsx";
-// Removed the direct import of collection.json
+import GalleryView from "./views/GalleryView.jsx";
+import ListView from "./views/ListView.jsx";
 
 export default function App() {
-  // State to hold the collection data
   const [collection, setCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(null);
 
-  // Fetch collection data from the API on component mount
   useEffect(() => {
-    fetch("/api/collection")
-      .then((res) => res.json())
-      .then((data) => {
-        setCollection(data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch collection data:", error);
-      });
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/collection", { headers: { Accept: "application/json" } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!cancelled) setCollection(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (!cancelled) setErr(e);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, []);
 
   return (
     <BrowserRouter>
-      <header style={{ padding: 12, display: "flex", gap: 12 }}>
+      <header style={{ padding: 12, display: "flex", gap: 12, alignItems: "center" }}>
         <Link to="/">Gallery</Link>
         <Link to="/list">List</Link>
         <span style={{ opacity: 0.6 }}>
-          Total: {collection?.length ?? 0}
+          {loading ? "Loading…" : `Total: ${collection?.length ?? 0}`}
         </span>
+        {err && <span style={{ color: "crimson", marginLeft: 8 }}>Failed to load collection</span>}
       </header>
 
       <Routes>
