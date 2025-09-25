@@ -1,8 +1,8 @@
-// frontend/src/App.jsx
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import GalleryView from "./views/GalleryView.jsx";
 import ListView from "./views/ListView.jsx";
+import ReportView from "./views/ReportView.jsx";  // ⚠️ Import the Report page component
 
 /**
  * Minimal error boundary to prevent white-screen on render-time exceptions.
@@ -41,7 +41,6 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-
     async function load() {
       try {
         const url = `${API_BASE}/api/collection`;
@@ -75,7 +74,6 @@ export default function App() {
         if (!cancelled) setLoading(false);
       }
     }
-
     load();
     return () => {
       cancelled = true;
@@ -88,6 +86,7 @@ export default function App() {
         <header style={{ padding: 12, display: "flex", gap: 12, alignItems: "center" }}>
           <Link to="/">Gallery</Link>
           <Link to="/list">List</Link>
+          <Link to="/report">Report</Link> {/* ⚠️ Added navigation link for Report page */}
           <span style={{ opacity: 0.7 }}>
             {loading ? "Loading…" : `Total: ${collection.length}`}
           </span>
@@ -101,8 +100,18 @@ export default function App() {
         {/* Only render routes once we either loaded or failed (to avoid child assumptions during initial mount) */}
         {!loading && (
           <Routes>
-            <Route path="/" element={<GalleryView items={Array.isArray(collection) ? collection : []} />} />
-            <Route path="/list" element={<ListView items={Array.isArray(collection) ? collection : []} />} />
+            <Route 
+              path="/" 
+              element={<GalleryView items={Array.isArray(collection) ? collection : []} />} 
+            />
+            <Route 
+              path="/list" 
+              element={<ListView items={Array.isArray(collection) ? collection : []} />} 
+            />
+            <Route 
+              path="/report" 
+              element={<ReportView />}   /* ⚠️ Integrate the ReportView component as a route */
+            />
           </Routes>
         )}
       </ErrorBoundary>
