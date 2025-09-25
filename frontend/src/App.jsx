@@ -4,6 +4,36 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import GalleryView from "./views/GalleryView.jsx";
 import ListView from "./views/ListView.jsx";
 
+/**
+ * Minimal error boundary to prevent white-screen on render-time exceptions.
+ */
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    // Log to console so we see the real, unminified error and component stack
+    console.error("Render error:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 16, color: "crimson" }}>
+          <h2>Something went wrong.</h2>
+          <p>Check the browser console for details.</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const API_BASE = import.meta.env?.VITE_API_BASE ?? ""; // e.g. http://localhost:5000
+
 export default function App() {
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,37 +42,4 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
-      try {
-        const res = await fetch("/api/collection", { headers: { Accept: "application/json" } });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (!cancelled) setCollection(Array.isArray(data) ? data : []);
-      } catch (e) {
-        if (!cancelled) setErr(e);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => { cancelled = true; };
-  }, []);
-
-  return (
-    <BrowserRouter>
-      <header style={{ padding: 12, display: "flex", gap: 12, alignItems: "center" }}>
-        <Link to="/">Gallery</Link>
-        <Link to="/list">List</Link>
-        <span style={{ opacity: 0.6 }}>
-          {loading ? "Loading…" : `Total: ${collection?.length ?? 0}`}
-        </span>
-        {err && <span style={{ color: "crimson", marginLeft: 8 }}>Failed to load collection</span>}
-      </header>
-
-      <Routes>
-        <Route path="/" element={<GalleryView items={collection} />} />
-        <Route path="/list" element={<ListView items={collection} />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+    async function load() {
