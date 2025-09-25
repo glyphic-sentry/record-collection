@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import GalleryView from "./GalleryView";
-import ListView from "./ListView";
+import GalleryView from "./GalleryView.jsx";
+import ListView from "./ListView.jsx";
 // Removed the direct import of collection.json
 
 export default function App() {
