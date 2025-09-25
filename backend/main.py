@@ -65,3 +65,13 @@ def serve_image(filename: str):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
     app.run(host="0.0.0.0", port=port)
+
+@app.route("/api/collection", methods=["GET"])
+def get_collection():
+    try:
+        data = load_collection()
+        # Ensure each album has a server-hosted cover_image URL
+        patched = patch_album_images(data)  # <-- patch in-place
+        return jsonify(patched)
+    except Exception:
+        return jsonify({"error": "Failed to read collection"}), 500
