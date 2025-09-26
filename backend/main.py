@@ -2,6 +2,7 @@ import os
 import json
 from flask import Flask, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
+from image_cache import patch_album_images
 
 BASE_DIR = os.path.dirname(__file__)
 STATIC_DIR = os.path.join(BASE_DIR, "static")
