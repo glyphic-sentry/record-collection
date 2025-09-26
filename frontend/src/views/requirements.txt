@@ -1,0 +1,48 @@
+# Record Collection App — Requirements
+
+## Core Views
+- **Gallery**: Horizontal carousel of album cards (cover, title, artist). Centered images, responsive to screen/window size, optimized for web and mobile.
+  - Click a card → **modal** with:
+    - Front cover (and **back cover** when available).
+    - Title, artist, year, label, format, genre.
+    - **Tracklist** (columns when long).
+    - **“View on Discogs”** link (https://www.discogs.com/release/{id}).
+- **List**: Vertical list with small thumbnail, title, artist, year (and light metadata).
+- **Report**: Charts for genre split, decade distribution, collection growth over time. Filters for genre/label. Dark/Light toggle. Click-to-filter taking you to List View of albums.
+
+## Navigation & Sorting/Filtering
+- Top-nav: Gallery | List | Report + count of total records.
+- **Search**: Filter by title/artist (client-side).
+- **Filters**: Genre, Label (client-side).
+- **Sort**: Recent (by `date_added` desc) vs Alphabetical (by artist/title).
+
+## Theming & Interaction
+- App supports **Dark/Light** mode, including charts in Report.
+- Carousel:
+  - Arrow keys and click-drag navigation.
+  - Smooth scrolling behavior.
+  - Hidden scrollbar.
+- Modal closes on overlay click or Close button; Esc to close (future).
+
+## Data & Images
+- `/api/collection` returns an array of albums with at least:
+  - `id`, `title`, `artist`, `year`, `label`, `format`, `genre`,
+  - `date_added`, `tracklist` (string array),
+  - Image paths: `cover_image`, `thumb`, `back_image`, `back_thumb` (all served by backend).
+- Backend serves:
+  - `/images/<file>` from `backend/images`
+  - `/static/*` for static assets (incl. **/static/fallback.jpg**).
+- An importer script (`backend/collection_importer.py`) can refresh `collection.json` and download any missing images from Discogs.
+
+## Stretch / Nice-to-haves
+- Bin assignment UI (write to `/api/bin/<id>`).
+- Detail page route for deep-linking a record.
+- Keyboard shortcuts (left/right in carousel, Esc to close modal).
+
+---
+
+### Dev/Deploy Notes
+- Frontend: Vite + React + react-slick. 
+- Backend: Flask. Static at `/static`, images at `/images`.
+- Don’t add a second `<BrowserRouter>`; it already wraps in `main.jsx`.
+- Prefer server-provided image paths; don’t guess filenames on the client.
