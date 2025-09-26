@@ -1,220 +1,252 @@
-import os
+# backend/collection_importer.py
+"""
+Importer/Refresher for record images and metadata fields.
+
+- Reads backend/collection.json
+- For each album with a Discogs release `id`, ensures local cached images exist
+  using the same logic as the web server (ensure_release_images).
+- Updates the album to reference absolute /images/... paths for cover/back and
+  keeps legacy thumb fields consistent.
+- Skips already-cached images unless --force is passed.
+- Supports --dry-run, --limit, and --ids filters.
+
+Usage examples:
+  python3 collection_importer.py
+  python3 collection_importer.py --limit 50
+  python3 collection_importer.py --force
+  python3 collection_importer.py --ids 1626692 1859153
+  python3 collection_importer.py --dry-run
+"""
+from __future__ import annotations
+
+import argparse
 import json
+import os
+import sys
 import time
-import requests
-from typing import Dict, List
-from PIL import Image
-from dotenv import load_dotenv
+from datetime import datetime
+from typing import Any, Dict, List, Tuple
 
-BASE_DIR = os.path.dirname(__file__)
-IMAGES_DIR = os.path.join(BASE_DIR, "images")
-COLLECTION_FILE = os.path.join(BASE_DIR, "collection.json")
-API_BASE = "https://api.discogs.com"
+# Reuse your backend caching logic
+from image_cache import ensure_release_images, FALLBACK_IMAGE
 
-load_dotenv()
-DISCOGS_USER = os.environ["DISCOGS_USER"]
-DISCOGS_TOKEN = os.environ["DISCOGS_TOKEN"]
+HERE = os.path.dirname(__file__)
+COLLECTION_PATH = os.path.join(HERE, "collection.json")
+IMAGES_DIR = os.path.join(HERE, "images")
 
-session = requests.Session()
-session.headers.update({
-    "User-Agent": "DiscogsCollectorBot/1.0",
-    "Authorization": f"Discogs token={DISCOGS_TOKEN}",
-})
+# Small politeness delay to avoid hammering Discogs unnecessarily
+DEFAULT_DELAY_SEC = float(os.environ.get("DISCOGS_DELAY_SEC", "0.25"))  # 250ms between calls
 
-os.makedirs(IMAGES_DIR, exist_ok=True)
 
-def download_image(url: str, filename: str) -> str:
-    """Download an image from URL if not already present. Returns filename or empty string."""
-    if not url:
-        return ""
-    ext = os.path.splitext(url)[1].lower()
-    if ext not in (".jpg", ".jpeg", ".png", ".webp"):
-        ext = ".jpg"
-    fname = f"{filename}{ext}"
-    local = os.path.join(IMAGES_DIR, fname)
-    if not os.path.exists(local):
-        try:
-            resp = session.get(url, stream=True, timeout=15)
-            resp.raise_for_status()
-            with open(local, "wb") as f:
-                for chunk in resp.iter_content(1024):
-                    f.write(chunk)
-        except requests.RequestException:
-            return ""
-    return fname
+def load_collection() -> Any:
+    if not os.path.exists(COLLECTION_PATH):
+        print(f"[ERROR] collection.json not found at: {COLLECTION_PATH}", file=sys.stderr)
+        sys.exit(1)
+    with open(COLLECTION_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-def create_thumb(filename: str, size=(256, 256)) -> str:
-    """Create a thumbnail for a downloaded image."""
-    if not filename:
-        return ""
-    src = os.path.join(IMAGES_DIR, filename)
-    name, ext = os.path.splitext(filename)
-    thumb_name = f"thumb_{name}{ext}"
-    dst = os.path.join(IMAGES_DIR, thumb_name)
-    if not os.path.exists(dst) and os.path.exists(src):
-        with Image.open(src) as img:
-            img.thumbnail(size)
-            img.save(dst)
-    return thumb_name
 
-def load_existing() -> Dict[int, dict]:
-    """Load existing collection from JSON, returning a dict indexed by album ID."""
-    if os.path.exists(COLLECTION_FILE):
-        with open(COLLECTION_FILE) as f:
-            arr = json.load(f)
-        return {a["id"]: a for a in arr}
-    return {}
-
-def local_exists(path: str) -> bool:
-    """Check if a local path (starting with /images/...) exists on disk."""
-    if not path or not path.startswith("/images/"):
-        return False
-    file_name = path.split("/")[-1]
-    return os.path.exists(os.path.join(IMAGES_DIR, file_name))
-
-def normalize_image_filenames(albums_by_id: Dict[int, dict]) -> None:
-    """Normalize image filenames by converting old *_1.jpg/_2.jpg patterns to new <id>.jpg naming (including thumbnails)."""
-    for album_id, album in albums_by_id.items():
-        for field in ["cover_image", "thumb", "back_image", "back_thumb"]:
-            path = album.get(field, "")
-            if not path or not path.startswith("/images/"):
-                continue
-            file_name = path.split("/")[-1]
-            new_file_name = None
-            # Determine new name based on pattern
-            if file_name.startswith("thumb_"):
-                # Thumbnail file
-                if file_name.endswith("_1.jpg"):
-                    base = file_name[len("thumb_"):-len("_1.jpg")]
-                    new_file_name = f"thumb_{base}.jpg"
-                elif file_name.endswith("_2.jpg"):
-                    base = file_name[len("thumb_"):-len("_2.jpg")]
-                    new_file_name = f"thumb_{base}_back.jpg"
-            else:
-                # Full-size image file
-                if file_name.endswith("_1.jpg"):
-                    base = file_name[:-len("_1.jpg")]
-                    new_file_name = f"{base}.jpg"
-                elif file_name.endswith("_2.jpg"):
-                    base = file_name[:-len("_2.jpg")]
-                    new_file_name = f"{base}_back.jpg"
-            if new_file_name:
-                orig_path = os.path.join(IMAGES_DIR, file_name)
-                new_path = os.path.join(IMAGES_DIR, new_file_name)
-                # Rename the file on disk if the original exists
-                if os.path.exists(orig_path):
-                    if os.path.exists(new_path):
-                        # If the target name already exists, remove the old file
-                        try:
-                            os.remove(orig_path)
-                        except OSError:
-                            pass
-                    else:
-                        os.rename(orig_path, new_path)
-                # Update the album record to use the new filename
-                album[field] = f"/images/{new_file_name}"
-
-def fetch_release_details(release_id: int) -> Dict:
-    """Fetch detailed release info (including tracklist and images) from the Discogs API."""
+def save_collection(data: Any, dry_run: bool) -> None:
+    if dry_run:
+        print("[DRY-RUN] Not writing changes to collection.json")
+        return
+    # Backup first
+    ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+    backup_path = f"{COLLECTION_PATH}.bak.{ts}"
     try:
-        res = session.get(f"{API_BASE}/releases/{release_id}", timeout=15)
-        res.raise_for_status()
-        return res.json()
-    except requests.RequestException:
-        return {}
+        if os.path.exists(COLLECTION_PATH):
+            with open(COLLECTION_PATH, "rb") as src, open(backup_path, "wb") as dst:
+                dst.write(src.read())
+            print(f"[INFO] Backed up old collection.json -> {backup_path}")
+    except Exception as e:
+        print(f"[WARN] Failed to create backup: {e}", file=sys.stderr)
 
-def fetch_collection() -> List[dict]:
-    existing = load_existing()
-    # Normalize existing image filenames for album art
-    if existing:
-        normalize_image_filenames(existing)
-    albums: List[dict] = []
-    page, per_page = 1, 100
+    tmp_path = f"{COLLECTION_PATH}.tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, COLLECTION_PATH)
+    print(f"[OK] Wrote updated collection.json")
 
-    while True:
-        url = f"{API_BASE}/users/{DISCOGS_USER}/collection/folders/0/releases?page={page}&per_page={per_page}"
-        res = session.get(url, timeout=15)
-        if res.status_code != 200:
+
+def extract_albums_shape(raw: Any) -> Tuple[List[Dict], Tuple[str, str | None]]:
+    """
+    Returns (albums_list, shape_info)
+    shape_info: ('list', None) or ('dict', key_used)
+    """
+    if isinstance(raw, list):
+        return raw, ("list", None)
+    if isinstance(raw, dict):
+        for key in ("records", "collection", "items"):
+            if isinstance(raw.get(key), list):
+                return raw[key], ("dict", key)
+    # Otherwise, treat as empty list
+    return [], ("list", None)
+
+
+def set_albums_back(raw: Any, albums: List[Dict], shape: Tuple[str, str | None]) -> Any:
+    kind, key = shape
+    if kind == "list":
+        return albums
+    out = dict(raw)
+    if key:
+        out[key] = albums
+    return out
+
+
+def first_existing_variant(base_no_ext: str) -> str | None:
+    for ext in ("jpg", "jpeg", "png", "webp"):
+        candidate = os.path.join(IMAGES_DIR, f"{base_no_ext}.{ext}")
+        if os.path.exists(candidate):
+            return f"/images/{os.path.basename(candidate)}"
+    return None
+
+
+def absolutize(path: str | None) -> str | None:
+    if not path:
+        return None
+    if path.startswith(("http://", "https://", "/")):
+        return path
+    return "/" + path.lstrip("/")
+
+
+def refresh_album_images(album: Dict, force: bool = False) -> Tuple[bool, str]:
+    """
+    Ensure local images exist for this album and update fields to absolute /images/... paths.
+    Returns (changed, message).
+    """
+    rid = album.get("id")
+    if not rid:
+        return False, "no id; skipped"
+
+    # check cache existence unless forcing
+    cover_cached = first_existing_variant(f"cover_{rid}")
+    back_cached = first_existing_variant(f"back_{rid}")
+
+    if not force and cover_cached:
+        # ensure album points to cached paths
+        changed = False
+        if album.get("cover_image") != cover_cached:
+            album["cover_image"] = cover_cached
+            changed = True
+        if back_cached and album.get("back_image") != back_cached:
+            album["back_image"] = back_cached
+            changed = True
+        # keep legacy thumb fields aligned (optional)
+        if album.get("thumb") != (cover_cached or FALLBACK_IMAGE):
+            album["thumb"] = cover_cached or FALLBACK_IMAGE
+            changed = True
+        if back_cached and album.get("back_thumb") != back_cached:
+            album["back_thumb"] = back_cached
+            changed = True
+        return changed, "already cached"
+
+    # Ensure via Discogs (may download now)
+    cover_url, back_url = ensure_release_images(int(rid))
+
+    # After ensure, resolve concrete cached paths again (prefer exact file on disk)
+    cover_final = first_existing_variant(f"cover_{rid}") or absolutize(cover_url) or FALLBACK_IMAGE
+    back_final = first_existing_variant(f"back_{rid}") or absolutize(back_url)
+
+    changed = False
+    if album.get("cover_image") != cover_final:
+        album["cover_image"] = cover_final
+        changed = True
+    if back_final and album.get("back_image") != back_final:
+        album["back_image"] = back_final
+        changed = True
+
+    # Keep thumb fields consistent (simple approach: point to same as cover/back)
+    if album.get("thumb") != (cover_final or FALLBACK_IMAGE):
+        album["thumb"] = cover_final or FALLBACK_IMAGE
+        changed = True
+    if back_final and album.get("back_thumb") != back_final:
+        album["back_thumb"] = back_final
+        changed = True
+
+    return changed, "downloaded" if (not cover_cached or (not back_cached and back_final)) else "updated refs"
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Refresh/download Discogs images and update collection.json")
+    parser.add_argument("--limit", type=int, default=0, help="Max number of albums to process (0 = all)")
+    parser.add_argument("--force", action="store_true", help="Redownload/repoint even if images exist")
+    parser.add_argument("--dry-run", action="store_true", help="Do not write collection.json; just log actions")
+    parser.add_argument("--ids", nargs="*", help="Only process these release IDs")
+    parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SEC, help=f"Delay between Discogs calls (default {DEFAULT_DELAY_SEC}s)")
+    args = parser.parse_args()
+
+    token = os.environ.get("DISCOGS_TOKEN")
+    ua = os.environ.get("DISCOGS_UA")
+    if not token:
+        print("[WARN] DISCOGS_TOKEN is not set. Requests may be throttled/blocked.", file=sys.stderr)
+    if not ua:
+        print("[WARN] DISCOGS_UA is not set. Set a proper User-Agent per Discogs policy.", file=sys.stderr)
+
+    os.makedirs(IMAGES_DIR, exist_ok=True)
+
+    raw = load_collection()
+    albums, shape = extract_albums_shape(raw)
+    if not albums:
+        print("[ERROR] No albums found in collection.json (expected list or records/collection/items array).", file=sys.stderr)
+        sys.exit(1)
+
+    # Optional filter by IDs
+    if args.ids:
+        idset = {int(x) for x in args.ids if str(x).isdigit()}
+        albums = [a for a in albums if a.get("id") and int(a["id"]) in idset]
+        print(f"[INFO] Filtering by ids: kept {len(albums)} items")
+
+    total = len(albums)
+    print(f"[INFO] Processing {total} album(s){' (dry-run)' if args.dry_run else ''}...")
+
+    processed = 0
+    changed_count = 0
+    downloaded_count = 0
+    skipped_count = 0
+    errors = 0
+
+    for idx, album in enumerate(albums, start=1):
+        if args.limit and processed >= args.limit:
             break
-        data = res.json()
-        releases = data.get("releases", [])
-        if not releases:
-            break
 
-        for item in releases:
-            basic = item.get("basic_information", {})
-            release_id = basic.get("id")
-            if not release_id:
-                continue
+        rid = album.get("id")
+        label = f"{album.get('artist', '')} – {album.get('title', '')}"
+        prefix = f"[{idx}/{total}] id={rid} {label}".strip()
 
-            # Determine if this album needs images refreshed
-            if release_id in existing:
-                rec = existing[release_id]
-                cover_ok = local_exists(rec.get("cover_image"))
-                back_ok = local_exists(rec.get("back_image"))
-                if cover_ok and back_ok:
-                    continue
-                else:
-                    existing.pop(release_id, None)
+        try:
+            changed, status = refresh_album_images(album, force=args.force)
+            processed += 1
+            if status == "downloaded":
+                downloaded_count += 1
+            elif status == "already cached":
+                skipped_count += 1
+            else:
+                # "updated refs" etc.
+                pass
+            if changed:
+                changed_count += 1
 
-            # Fetch detailed info for tracklist and images
-            detailed = fetch_release_details(release_id)
-            images = detailed.get("images", [])
-            urls = [
-                img.get("uri") or img.get("uri_https") or img.get("resource_url")
-                for img in images 
-                if img.get("uri") or img.get("uri_https") or img.get("resource_url")
-            ]
+            print(f"{prefix}: {status}")
+            # politeness delay only when we might call Discogs
+            if args.delay and status in ("downloaded",):
+                time.sleep(args.delay)
 
-            # Primary cover (first image)
-            cover_name = ""
-            thumb_name = ""
-            if urls:
-                fname = download_image(urls[0], str(release_id))
-                thumb = create_thumb(fname)
-                cover_name = f"/images/{fname}" if fname else ""
-                thumb_name = f"/images/{thumb}" if thumb else ""
+        except Exception as e:
+            errors += 1
+            print(f"{prefix}: ERROR: {e}", file=sys.stderr)
 
-            # Back cover (second image), if available
-            back_name = ""
-            back_thumb_name = ""
-            if len(urls) > 1:
-                fname2 = download_image(urls[1], f"{release_id}_back")
-                thumb2 = create_thumb(fname2)
-                back_name = f"/images/{fname2}" if fname2 else ""
-                back_thumb_name = f"/images/{thumb2}" if thumb2 else ""
+    # Write back
+    if changed_count and not args.dry_run:
+        updated = set_albums_back(raw, albums, shape)
+        save_collection(updated, dry_run=False)
+    else:
+        print("[INFO] No changes to write." if not changed_count else "[DRY-RUN] Changes not written.")
 
-            album = {
-                "id": release_id,
-                "title": basic.get("title"),
-                "artist": ", ".join(a["name"] for a in basic.get("artists", [])),
-                "year": basic.get("year"),
-                "label": basic.get("labels", [{}])[0].get("name", ""),
-                "format": ", ".join(f["name"] for f in basic.get("formats", [])),
-                "genre": basic.get("genres", [""])[0],
-                "cover_image": cover_name,
-                "thumb": thumb_name,
-                "back_image": back_name,
-                "back_thumb": back_thumb_name,
-                "tracklist": [t["title"] for t in detailed.get("tracklist", [])],
-                "date_added": item.get("date_added"),
-            }
-            albums.append(album)
-            time.sleep(1)  # respect API rate limits
+    print(
+        f"[SUMMARY] processed={processed} downloaded={downloaded_count} "
+        f"changed={changed_count} skipped={skipped_count} errors={errors}"
+    )
 
-        if len(releases) < per_page:
-            break
-        page += 1
-
-    # Combine updated existing albums with newly fetched albums, sorted by date_added
-    return sorted(list(existing.values()) + albums, key=lambda x: x.get("date_added", ""), reverse=True)
-
-def save_collection(albums: List[dict]) -> None:
-    """Save the collection of albums to the collection JSON file."""
-    with open(COLLECTION_FILE, "w") as f:
-        json.dump(albums, f, indent=2)
 
 if __name__ == "__main__":
-    records = fetch_collection()
-    save_collection(records)
-    print(f"Saved {len(records)} albums")
+    main()
