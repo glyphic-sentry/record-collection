@@ -3,6 +3,9 @@ import React, { useMemo, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import resolveImg from "../utils/resolveImg";
+// ...
+<img src={resolveImg(album?.cover_image)} onError={(e)=>{e.currentTarget.src="/static/fallback.jpg"}} ... />
 
 function RecordCard({ album, onClick }) {
   const src = album?.cover_image || "/static/fallback.jpg";
