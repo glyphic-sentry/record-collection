@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import resolveImg from "../utils/resolveImg";
+// ...
+<img src={resolveImg(album?.cover_image)} onError={(e)=>{e.currentTarget.src="/static/fallback.jpg"}} ... />
 
 export default function AlbumCard({ album }) {
   const info = album.basic_information;
