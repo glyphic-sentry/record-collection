@@ -1,5 +1,8 @@
 // frontend/src/views/ListView.jsx
 import React, { useCallback, useMemo, useState } from "react";
+import resolveImg from "../utils/resolveImg";
+// ...
+<img src={resolveImg(album?.cover_image)} onError={(e)=>{e.currentTarget.src="/static/fallback.jpg"}} ... />
 
 /**
  * A11y: Focusable, clickable row that opens a modal with details.
