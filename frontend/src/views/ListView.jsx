@@ -1,8 +1,5 @@
-// frontend/src/views/GalleryView.js
-import React, { useMemo, useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+// frontend/src/views/ListView.js
+import React, { useCallback, useMemo, useState } from "react";
 
 function resolveImg(album) {
   if (!album) return "/static/fallback.jpg";
@@ -11,56 +8,110 @@ function resolveImg(album) {
   return "/static/fallback.jpg";
 }
 
-function RecordCard({ album, onOpen }) {
-  const src = resolveImg(album);
-  const title = album?.title ?? album?.name ?? "(untitled)";
-  const artist = album?.artist ?? album?.artists?.[0]?.name ?? "";
+/** Focusable, fully clickable row that opens a modal with details. */
+function ListRow({ album, onOpen }) {
+  const cover = resolveImg(album);
+  const subtitle = [
+    album?.artist ?? album?.artists?.[0]?.name ?? "",
+    album?.year ? `• ${album.year}` : "",
+    album?.label ? `• ${album.label}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const handleOpen = useCallback(() => onOpen?.(album), [album, onOpen]);
+  const handleKey = useCallback(
+    (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onOpen?.(album);
+      }
+    },
+    [album, onOpen]
+  );
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpen?.(album)}
-      className="gallery-card"
-      style={{ padding: 8, cursor: "pointer", background: "transparent", border: "none" }}
-      aria-label={`Open details for ${artist} – ${title}`}
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleOpen}
+      onKeyDown={handleKey}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "64px 1fr 24px",
+        gap: 12,
+        alignItems: "center",
+        padding: "10px 12px",
+        borderBottom: "1px solid #e9e9e9",
+        cursor: "pointer",
+        background: "transparent",
+      }}
+      aria-label={`Open details for ${album?.artist ?? ""} – ${album?.title ?? ""}`}
     >
-      <figure style={{ margin: 0, width: "100%" }}>
-        <img
-          src={src}
-          alt={`${title} cover`}
-          onError={(e) => {
-            e.currentTarget.src = "/static/fallback.jpg";
+      <img
+        src={cover}
+        alt={`${album?.title ?? "Record"} cover`}
+        onError={(e) => {
+          e.currentTarget.src = "/static/fallback.jpg";
+        }}
+        style={{
+          width: 64,
+          height: 64,
+          objectFit: "cover",
+          borderRadius: 6,
+          background: "#f0f0f0",
+        }}
+        loading="lazy"
+      />
+
+      <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            lineHeight: 1.2,
           }}
-          style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 8 }}
-          loading="lazy"
-        />
-        <figcaption style={{ marginTop: 8 }}>
-          <div
-            style={{
-              fontWeight: 600,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={title}
-          >
-            {title}
+          title={album?.title || ""}
+        >
+          {album?.title ?? album?.name ?? "(untitled)"}
+        </div>
+        <div
+          style={{
+            opacity: 0.75,
+            fontSize: 12,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            lineHeight: 1.3,
+            marginTop: 2,
+          }}
+          title={subtitle}
+        >
+          {subtitle}
+        </div>
+        {album?.genre && (
+          <div style={{ opacity: 0.65, fontSize: 12, marginTop: 2 }}>
+            {Array.isArray(album.genre) ? album.genre.join(", ") : album.genre}
           </div>
-          <div
-            style={{
-              opacity: 0.7,
-              fontSize: 12,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={artist}
-          >
-            {artist}
-          </div>
-        </figcaption>
-      </figure>
-    </button>
+        )}
+      </div>
+
+      {/* chevron */}
+      <div
+        aria-hidden
+        style={{
+          justifySelf: "end",
+          color: "#bbb",
+          fontSize: 18,
+          lineHeight: 1,
+          userSelect: "none",
+        }}
+      >
+        ▸
+      </div>
+    </div>
   );
 }
 
@@ -70,12 +121,6 @@ function Modal({ album, onClose }) {
   const discogsUrl = album?.id ? `https://www.discogs.com/release/${album.id}` : null;
   const cover = album?.cover_image || (album?.id ? `/cover/${album.id}` : "/static/fallback.jpg");
   const back = album?.back_image || album?.back_thumb || (album?.id ? `/back/${album.id}` : null);
-  const metaBits = [
-    album?.year,
-    album?.label,
-    album?.format,
-    Array.isArray(album?.genre) ? album.genre.join(", ") : album?.genre,
-  ].filter(Boolean);
 
   return (
     <div
@@ -136,9 +181,16 @@ function Modal({ album, onClose }) {
             <div>
               <h3 style={{ margin: 0 }}>{album.title}</h3>
               <div style={{ opacity: 0.8 }}>{album.artist}</div>
-              {metaBits.length > 0 && (
-                <div style={{ opacity: 0.7, fontSize: 12 }}>{metaBits.join(" • ")}</div>
-              )}
+              <div style={{ opacity: 0.7, fontSize: 12 }}>
+                {[
+                  album.year,
+                  album.label,
+                  album.format,
+                  Array.isArray(album.genre) ? album.genre.join(", ") : album.genre,
+                ]
+                  .filter(Boolean)
+                  .join(" • ")}
+              </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               {discogsUrl && (
@@ -184,37 +236,23 @@ function Modal({ album, onClose }) {
   );
 }
 
-export default function GalleryView({ items = [] }) {
+export default function ListView({ items = [] }) {
   const [selected, setSelected] = useState(null);
+  const handleOpen = useCallback((album) => setSelected(album), []);
+  const handleClose = useCallback(() => setSelected(null), []);
 
-  const settings = useMemo(
-    () => ({
-      dots: false,
-      arrows: true,
-      infinite: false,
-      speed: 300,
-      slidesToShow: 6,
-      slidesToScroll: 6,
-      responsive: [
-        { breakpoint: 1536, settings: { slidesToShow: 5, slidesToScroll: 5 } },
-        { breakpoint: 1280, settings: { slidesToShow: 4, slidesToScroll: 4 } },
-        { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 3 } },
-        { breakpoint: 640, settings: { slidesToShow: 2, slidesToScroll: 2 } },
-        { breakpoint: 420, settings: { slidesToShow: 1, slidesToScroll: 1 } },
-      ],
-    }),
-    []
+  const rows = useMemo(
+    () =>
+      items.map((album) => (
+        <ListRow key={album.id ?? `${album.artist}-${album.title}`} album={album} onOpen={handleOpen} />
+      )),
+    [items, handleOpen]
   );
 
   return (
-    <div className="gallery-slider" style={{ padding: 16 }}>
-      <Slider {...settings}>
-        {items.map((album) => (
-          <RecordCard key={album.id ?? `${album.artist}-${album.title}`} album={album} onOpen={setSelected} />
-        ))}
-      </Slider>
-
-      <Modal album={selected} onClose={() => setSelected(null)} />
+    <div style={{ padding: "8px 0" }}>
+      {rows.length > 0 ? rows : <div style={{ padding: 16, opacity: 0.7 }}>No records found.</div>}
+      <Modal album={selected} onClose={handleClose} />
     </div>
   );
 }
