@@ -27,12 +27,6 @@ def favicon():
     except FileNotFoundError:
         abort(404)
 
-@app.route("/api/collection", methods=["GET"])
-def get_collection():
-    try:
-        return jsonify(load_collection())
-    except Exception:
-        return jsonify({"error": "Failed to read collection"}), 500
 
 @app.route("/api/bin/<int:album_id>", methods=["POST"])
 def update_bin(album_id: int):
